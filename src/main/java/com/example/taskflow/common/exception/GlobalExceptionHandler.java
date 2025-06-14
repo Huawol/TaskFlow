@@ -36,4 +36,9 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>(false, ex.getMessage(), null));
 	}
 
+	@ExceptionHandler(TodoNotFoundException.class)
+	public ResponseEntity<ApiResponse<Void>> handlerTodoNotFoundException(TodoNotFoundException ex) {
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>(false, ex.getMessage(), null));
+	}
+
 }
