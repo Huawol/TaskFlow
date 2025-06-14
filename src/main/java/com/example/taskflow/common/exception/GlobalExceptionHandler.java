@@ -17,6 +17,11 @@ public class GlobalExceptionHandler {
 		return new ApiResponse<>(false, ex.getMessage(), null);
 	}
 
+	@ExceptionHandler(UserNotFoundException.class)
+	public ApiResponse<Void> handlerUserNotFoundException(UserNotFoundException ex) {
+		return new ApiResponse<>(false, ex.getMessage(), null);
+	}
+
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ApiResponse<Void> handlerValidationException(MethodArgumentNotValidException ex) {
 
