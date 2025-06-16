@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.example.taskflow.common.ApiResponse;
+import com.example.taskflow.task.exception.InvalidTaskStatusTransitionException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -40,5 +41,9 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ApiResponse<Void>> handlerTodoNotFoundException(TodoNotFoundException ex) {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>(false, ex.getMessage(), null));
 	}
-  
+
+	@ExceptionHandler(InvalidTaskStatusTransitionException.class)
+	public ResponseEntity<ApiResponse<Void>> handlerInvalidTaskStatusTransitionException(InvalidTaskStatusTransitionException ex) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<>(false, ex.getMessage(), null));
+	}
 }
