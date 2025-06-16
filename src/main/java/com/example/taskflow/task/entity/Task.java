@@ -1,4 +1,4 @@
-package com.example.taskflow.todo.entity;
+package com.example.taskflow.task.entity;
 
 import java.time.LocalDate;
 
@@ -17,12 +17,14 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name="todos")
+@Getter
+@Table(name="tasks")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Todo extends BaseEntity {
+public class Task extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,12 +45,30 @@ public class Todo extends BaseEntity {
 	private String content;
 
 	@Column
-	private LocalDate deadLine;
+	private LocalDate startDate;
+
+	@Column
+	private LocalDate deadline;
 
 	@Enumerated(EnumType.STRING)
 	private Status status = Status.TODO;
 
 	@Enumerated(EnumType.STRING)
-	private Priority priority = Priority.MEDIUM;
+	private Priority priority = Priority.LOW;
+
+	//new 키워드 접근 제한
+	private Task(User createdBy, User assignedTo, String title, String content, LocalDate deadline, String priority) {
+		this.createdBy = createdBy;
+		this.assignedTo = assignedTo;
+		this.title = title;
+		this.content = content;
+		this.deadline = deadline;
+		if(priority != null) {this.priority = Priority.from(priority);}
+	}
+
+	//팩토리 메서드
+	public static Task create(User createdBy, User assignedTo, String title, String content, LocalDate deadline, String priority) {
+		return new Task(createdBy, assignedTo, title, content, deadline, priority);
+	}
 
 }
