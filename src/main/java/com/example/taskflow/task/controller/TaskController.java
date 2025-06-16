@@ -2,6 +2,7 @@ package com.example.taskflow.task.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,7 +17,6 @@ import com.example.taskflow.task.dto.request.TaskStatusRequestDto;
 import com.example.taskflow.task.dto.response.TaskResponseDto;
 import com.example.taskflow.task.dto.response.TaskWithCommentResponseDto;
 import com.example.taskflow.task.service.TaskService;
-import com.example.taskflow.user.entity.User;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,15 +28,13 @@ public class TaskController {
 
 	private final TaskService taskService;
 
-	//@PreAuthorize("isAuthenticated()")
+	@PreAuthorize("isAuthenticated()")
 	@PostMapping
 	public ResponseEntity<ApiResponse<TaskResponseDto>> createTask(@Valid @RequestBody TaskCreateRequestDto requestDto) {
-		//시큐리티 없으니 테스트용 임시 객체를 사용 -> userDetails 가 될 예정
-		User createdBy = new User();
-		createdBy.setId(1L);
+		Long id = 1L;
 
 		return ResponseEntity.status(HttpStatus.CREATED)
-			.body(new ApiResponse<>(true, "정상적으로 할일이 생성되었습니다.", taskService.saveTask(createdBy.getId(), requestDto)));
+			.body(new ApiResponse<>(true, "정상적으로 할일이 생성되었습니다.", taskService.saveTask(id, requestDto)));
 	}
 
 	@GetMapping("/{id}")
