@@ -1,4 +1,4 @@
-package com.example.taskflow.todo.entity;
+package com.example.taskflow.task.entity;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
