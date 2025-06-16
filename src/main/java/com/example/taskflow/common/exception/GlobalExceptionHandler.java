@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.example.taskflow.common.ApiResponse;
-import com.example.taskflow.task.exception.InvalidTaskPriorityTransitionException;
 import com.example.taskflow.task.exception.PriorityTransitionException;
 import com.example.taskflow.task.exception.StatusTransitionException;
 
