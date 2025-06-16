@@ -1,20 +1,19 @@
 package com.example.taskflow.log.dto.request;
 
-
 import com.example.taskflow.log.ActivityType;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class ActivityLogCreateRequestDto {
+public class ActivityLogRequestDto {
 
     private Long userId;
 
@@ -30,8 +29,9 @@ public class ActivityLogCreateRequestDto {
 
     private LocalDateTime timestamp;
 
-    private String beforeStatus;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private LocalDate startDate;
 
-    private String afterStatus;
-
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private LocalDate endDate;
 }
