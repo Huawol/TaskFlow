@@ -78,4 +78,9 @@ public class Task extends BaseEntity {
 		this.status = Status.from(value);
 	}
 
+	//시작 날짜 세팅 메서드
+	public void setStartDate() {
+		this.startDate = LocalDate.now();
+	}
+
 }
