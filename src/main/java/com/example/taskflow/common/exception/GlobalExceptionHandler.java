@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.example.taskflow.common.ApiResponse;
-import com.example.taskflow.task.exception.InvalidTaskStatusTransitionException;
+import com.example.taskflow.task.exception.InvalidTaskPriorityTransitionException;
+import com.example.taskflow.task.exception.PriorityTransitionException;
+import com.example.taskflow.task.exception.StatusTransitionException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -42,8 +44,13 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>(false, ex.getMessage(), null));
 	}
 
-	@ExceptionHandler(InvalidTaskStatusTransitionException.class)
-	public ResponseEntity<ApiResponse<Void>> handlerInvalidTaskStatusTransitionException(InvalidTaskStatusTransitionException ex) {
+	@ExceptionHandler(StatusTransitionException.class)
+	public ResponseEntity<ApiResponse<Void>> handlerStatusTransitionException(StatusTransitionException ex) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<>(false, ex.getMessage(), null));
+	}
+
+	@ExceptionHandler(PriorityTransitionException.class)
+	public ResponseEntity<ApiResponse<Void>> handlerPriorityTransitionException(PriorityTransitionException ex) {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<>(false, ex.getMessage(), null));
 	}
 }
