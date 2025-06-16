@@ -16,6 +16,6 @@ spring:
         dialect: org.hibernate.dialect.MySQL8Dialect
 
 jwt:
-  secret:
-    key: "S2VrMjlmanNkXzEhYUpkbGxmMDNzZGZRdzhYbnp2MDkmREZhMjl3QHNhTGs="
+  secret-key: "S2VrMjlmanNkXzEhYUpkbGxmMDNzZGZRdzhYbnp2MDkmREZhMjl3QHNhTGs="
+  bearer-prefix: "Bearer "
 

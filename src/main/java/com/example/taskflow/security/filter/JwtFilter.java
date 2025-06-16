@@ -1,7 +1,7 @@
 package com.example.taskflow.security.filter;
 
 import com.example.taskflow.security.config.JwtUtil;
-import com.example.taskflow.security.dto.AuthUser;
+import com.example.taskflow.security.dto.AuthUserDto;
 import com.example.taskflow.security.enums.UserRole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -51,11 +51,11 @@ public class JwtFilter extends OncePerRequestFilter {
             String email = jwtUtil.getEmail(jwt);
 
             //todo 토큰을 통해서 가져온 정보들을 토대로 (수정해야 할수 있음)
-            AuthUser authUser = new AuthUser(userId, email, userRole);
+            AuthUserDto authUserDto = new AuthUserDto(userId, email, userRole);
 
             // 인증 객체를 직접만들어준다...
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                    authUser, "", List.of(new SimpleGrantedAuthority("ROLE_" + userRole.name())) // 권한까지 부여
+                    authUserDto, "", List.of(new SimpleGrantedAuthority("ROLE_" + userRole.name())) // 권한까지 부여
             );
 
             // 거를 contextholder에 대입

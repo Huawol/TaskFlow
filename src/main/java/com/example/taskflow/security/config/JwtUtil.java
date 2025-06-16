@@ -4,6 +4,8 @@ import com.example.taskflow.security.enums.UserRole;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -11,24 +13,20 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.rmi.ServerException;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
 
-
 @Slf4j(topic = "JwtUtil")
 @Component
+@RequiredArgsConstructor
 public class JwtUtil {
 
-    private static final String BEARER_PREFIX = "Bearer ";
+    private final JwtProperties jwtProperties;
+
     private static final long TOKEN_TIME = 60 * 60 * 1000L; // 60분짜리 토큰
     // JWT 서명 알고리즘
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
-
-    // 애플리케이션 설정 파일에서 주입받은 비밀 키
-    @Value("${jwt.secret.key}")
-    private String secretKey;
     // 실제 서명에 사용되는 키 객체
     private Key key;
 
@@ -38,24 +36,41 @@ public class JwtUtil {
      */
     @PostConstruct
     public void init() {
-        byte[] bytes = Base64.getDecoder().decode(secretKey);
-        key = Keys.hmacShaKeyFor(bytes);
+        try {
+            String secretKey = jwtProperties.getSecretKey();
+            if (!StringUtils.hasText(secretKey)) {
+                throw new IllegalArgumentException("JWT 시크릿 키가 설정되지 않았습니다.");
+            }
+
+            byte[] bytes = Base64.getDecoder().decode(secretKey);
+            if (bytes.length < 32) {
+                throw new IllegalArgumentException("JWT 시크릿 키는 최소 32바이트 이상이어야 합니다.");
+            }
+
+            key = Keys.hmacShaKeyFor(bytes);
+        } catch (IllegalArgumentException e) {
+            log.error("JWT 시크릿 키 초기화 실패: {}", e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "JWT 설정 오류");
+        }
     }
 
 
     /**
      * JWT 토큰을 생성합니다.
+     *
+     * @param l
      * @param username 사용자 이름
      * @param userRole 사용자의 역할 (권한)
      * @return 생성된 JWT 토큰
      */
-    public String createToken(String username, UserRole userRole) {
+    public String createToken(long l, String username, UserRole userRole) {
         Date date = new Date();
-
-        return BEARER_PREFIX +
+        // todo 바꿀거!!!!!!!!!!!!!!!!!!!!!!!!!
+        return jwtProperties.getBearerPrefix() +
                 Jwts.builder()
-                        .setSubject(username) // 사용자 식별자 (ID)
-                        .claim("auth", userRole) // 사용자 권한 (역할) // 추가
+                        .setSubject(String.valueOf(l)) // 사용자 식별자 (ID)
+                        .claim("email", username) // 바꿔야함
+                        .claim("userRole", userRole) // 사용자 권한 (역할) // 추가
                         .setExpiration(new Date(date.getTime() + TOKEN_TIME)) // 만료 시간 설정
                         .setIssuedAt(date) // 발급 시간 설정
                         .signWith(key, signatureAlgorithm) // 비밀 키와 알고리즘으로 서명
