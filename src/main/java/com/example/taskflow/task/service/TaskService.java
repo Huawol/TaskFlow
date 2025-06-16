@@ -12,6 +12,7 @@ import com.example.taskflow.comment.repository.CommentRepository;
 import com.example.taskflow.common.exception.TodoNotFoundException;
 import com.example.taskflow.common.exception.UserNotFoundException;
 import com.example.taskflow.task.dto.request.TaskCreateRequestDto;
+import com.example.taskflow.task.dto.request.TaskStatusRequestDto;
 import com.example.taskflow.task.dto.response.CommentSimpleResponseDto;
 import com.example.taskflow.task.dto.response.TaskResponseDto;
 import com.example.taskflow.task.dto.response.TaskWithCommentResponseDto;
@@ -58,7 +59,17 @@ public class TaskService {
 		return TaskWithCommentResponseDto.from(foundTask, commentSimpleResponses);
 	}
 
-	public TaskWithCommentResponseDto changeStatusComment(Long id) {
+	/*
+	상태값 변경 메서드
+	요구사항 TODO -> IN_PROGRESS -> DONE 으로만 변경 가능 이전으로 상태 변경 불가
+	 */
+	public TaskWithCommentResponseDto changeStatusComment(Long id, TaskStatusRequestDto requestDto) {
+		Task foundTask = getTaskOrThrow(taskRepository.findByIdAndDeletedFalse(id));
+		foundTask.changeStatus(requestDto.getStatus()); //더티체킹
+		List<Comment> comments = commentRepository.findByTaskIdAndDeletedFalse(id);
+		List<CommentSimpleResponseDto> commentSimpleResponses = comments.stream().map(CommentSimpleResponseDto::from).collect(Collectors.toList());
+
+		return TaskWithCommentResponseDto.from(foundTask, commentSimpleResponses);
 	}
 
 

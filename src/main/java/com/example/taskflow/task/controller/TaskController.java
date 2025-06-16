@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.taskflow.common.ApiResponse;
 import com.example.taskflow.task.dto.request.TaskCreateRequestDto;
+import com.example.taskflow.task.dto.request.TaskStatusRequestDto;
 import com.example.taskflow.task.dto.response.TaskResponseDto;
 import com.example.taskflow.task.dto.response.TaskWithCommentResponseDto;
 import com.example.taskflow.task.service.TaskService;
@@ -45,9 +46,10 @@ public class TaskController {
 	}
 
 	@PatchMapping("/{id}")
-	public ResponseEntity<ApiResponse<TaskWithCommentResponseDto>> statusUpdateComment(@PathVariable Long id) {
+	public ResponseEntity<ApiResponse<TaskWithCommentResponseDto>> statusUpdateComment(
+		@PathVariable Long id, @Valid @RequestBody TaskStatusRequestDto requestDto) {
 		return ResponseEntity.status(HttpStatus.OK)
-			.body(new ApiResponse<>(true, "정상적으로 상태를 변경했습니다.", taskService.changeStatusComment(id)));
+			.body(new ApiResponse<>(true, "정상적으로 상태를 변경했습니다.", taskService.changeStatusComment(id, requestDto)));
 	}
 
 }
