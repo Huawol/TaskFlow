@@ -16,7 +16,9 @@ import com.example.taskflow.task.dto.request.TaskStatusRequestDto;
 import com.example.taskflow.task.dto.response.CommentSimpleResponseDto;
 import com.example.taskflow.task.dto.response.TaskResponseDto;
 import com.example.taskflow.task.dto.response.TaskWithCommentResponseDto;
+import com.example.taskflow.task.entity.Status;
 import com.example.taskflow.task.entity.Task;
+import com.example.taskflow.task.exception.StatusTransitionException;
 import com.example.taskflow.task.repository.TaskRepository;
 import com.example.taskflow.user.entity.User;
 import com.example.taskflow.user.repository.UserRepository;
@@ -59,12 +61,22 @@ public class TaskService {
 		return TaskWithCommentResponseDto.from(foundTask, commentSimpleResponses);
 	}
 
-	/*
-	상태값 변경 메서드
-	요구사항 TODO -> IN_PROGRESS -> DONE 으로만 변경 가능 이전으로 상태 변경 불가
-	 */
+	//상태값 변경 메서드
 	public TaskWithCommentResponseDto changeStatusComment(Long id, TaskStatusRequestDto requestDto) {
 		Task foundTask = getTaskOrThrow(taskRepository.findByIdAndDeletedFalse(id));
+
+		//변경을 원하는 상태값 enum 값으로 변경 후 검증 메서드 호출
+		Status requestStatus = Status.from(requestDto.getStatus());
+
+		if(!inValidTransition(foundTask.getStatus(), requestStatus)) {
+			throw new StatusTransitionException("상태값은 TODO -> IN_PROGRESS -> DONE 순으로만 변경 가능합니다.");
+		}
+
+		if(requestStatus.equals(Status.IN_PROGRESS)){
+			//변경값이 TODO -> IN_PROGRESS 일 경우 시작일 세팅
+			foundTask.setStartDate();
+		}
+
 		foundTask.changeStatus(requestDto.getStatus()); //더티체킹
 		List<Comment> comments = commentRepository.findByTaskIdAndDeletedFalse(id);
 		List<CommentSimpleResponseDto> commentSimpleResponses = comments.stream().map(CommentSimpleResponseDto::from).collect(Collectors.toList());
@@ -80,6 +92,22 @@ public class TaskService {
 
 	private Task getTaskOrThrow(Optional<Task> todo) {
 		return todo.orElseThrow(() -> new TodoNotFoundException("ID 값과 일치하는 유저를 찾을 수 없습니다."));
+	}
+
+	/*
+	요구사항
+	TODO -> IN_PROGRESS -> DONE 으로만 변경 가능 이전으로 상태 변경 불가
+	요청에 담긴 status 값이 요구사항에 충족하는지 검증하는 메서드
+	*/
+	private boolean inValidTransition(Status currentStatus, Status requestStatus) {
+
+		if(currentStatus.equals(Status.TODO) && requestStatus.equals(Status.IN_PROGRESS)) {
+			return true;
+		}
+		if(currentStatus.equals(Status.IN_PROGRESS) && requestStatus.equals(Status.DONE)) {
+			return true;
+		}
+		return false;
 	}
 
 }
