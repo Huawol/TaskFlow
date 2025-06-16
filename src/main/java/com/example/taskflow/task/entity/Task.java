@@ -50,9 +50,11 @@ public class Task extends BaseEntity {
 	@Column
 	private LocalDate deadline;
 
+	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private Status status = Status.TODO;
 
+	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private Priority priority = Priority.LOW;
 
@@ -69,6 +71,11 @@ public class Task extends BaseEntity {
 	//팩토리 메서드
 	public static Task create(User createdBy, User assignedTo, String title, String content, LocalDate deadline, String priority) {
 		return new Task(createdBy, assignedTo, title, content, deadline, priority);
+	}
+
+	//상태 변경 메서드
+	public void changeStatus(String value) {
+		this.status = Status.from(value);
 	}
 
 }
