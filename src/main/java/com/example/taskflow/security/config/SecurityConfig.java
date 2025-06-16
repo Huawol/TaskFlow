@@ -47,11 +47,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/profiles").hasRole(UserRole.USER.name()) // 프로필 조회
 
                         // 할일 인가
-                        .requestMatchers(HttpMethod.POST, "/api/todos").hasRole(UserRole.USER.name()) // 생성
-                        .requestMatchers(HttpMethod.GET, "/api/todos/*").hasRole(UserRole.USER.name()) // 단건 조회
-                        .requestMatchers(HttpMethod.GET, "/api/todos").hasRole(UserRole.USER.name()) // 전체 조회
-                        .requestMatchers(HttpMethod.PATCH, "/api/todos/*").hasRole(UserRole.USER.name()) // 수정
-                        .requestMatchers(HttpMethod.DELETE, "/api/todos/*").hasRole(UserRole.USER.name()) // 삭제
+                        .requestMatchers(HttpMethod.POST, "/api/tasks").hasRole(UserRole.USER.name()) // 생성
+                        .requestMatchers(HttpMethod.GET, "/api/tasks/*").hasRole(UserRole.USER.name()) // 단건 조회
+                        .requestMatchers(HttpMethod.GET, "/api/tasks").hasRole(UserRole.USER.name()) // 전체 조회
+                        .requestMatchers(HttpMethod.PATCH, "/api/tasks/*").hasRole(UserRole.USER.name()) // 수정
+                        .requestMatchers(HttpMethod.DELETE, "/api/tasks/*").hasRole(UserRole.USER.name()) // 삭제
 
                         // 댓글 인가
                         .requestMatchers(HttpMethod.POST, "/api/tasks/comments").hasRole(UserRole.USER.name())
@@ -60,8 +60,12 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PATCH, "/api/tasks/comments/*").hasRole(UserRole.USER.name())
                         .requestMatchers(HttpMethod.DELETE, "/api/tasks/comments/*").hasRole(UserRole.USER.name())
 
-                        // 대시보드도 인가가 필요한가?? api 가 따로 필요.. 어드민으로 추가..
-                        // task 관리쪽도
+                        // 대시보드 인가
+                        .requestMatchers(HttpMethod.GET, "/api/dashboards").hasRole(UserRole.USER.name())
+                        .requestMatchers(HttpMethod.GET, "/api/dashboards/*").hasRole(UserRole.USER.name())
+
+                        // 로그 조회 인가
+                        .requestMatchers(HttpMethod.GET, "/api/logs").hasRole(UserRole.USER.name())
 
                         .anyRequest().denyAll()
                 )
