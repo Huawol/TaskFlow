@@ -42,7 +42,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // todo : 인가할거 추가..
                         // 유저 및 로그인 인가
-                        .requestMatchers(HttpMethod.POST, "/api/users").permitAll() // 회원가입
+                        .requestMatchers(HttpMethod.POST, "/api/signup").permitAll() // 회원가입
                         .requestMatchers(HttpMethod.GET, "/api/login").permitAll() // 로그인 //http://localhost:8080/login // 인증인가를 확인하지 않고 전부 허용
                         .requestMatchers(HttpMethod.POST, "/api/profiles").hasRole(UserRole.USER.name()) // 프로필 조회
 
