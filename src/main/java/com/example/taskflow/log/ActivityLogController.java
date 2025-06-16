@@ -19,11 +19,11 @@ public class ActivityLogController {
 
     private final ActivityService activityService;
 
-    @PostMapping
-    public ResponseEntity<ApiResponse<String>> create(@Valid @RequestBody ActivityLogResponseDto responseDto) {
-        activityService.save(responseDto);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new ApiResponse<>(true, "새로운 작업이 생성되었습니다.", null));
-    }
+//    @PostMapping
+//    public ResponseEntity<ApiResponse<String>> create(@Valid @RequestBody ActivityLogCreateRequestDto requestDto) {
+//        activityService.save(requestDto);
+//        return ResponseEntity.status(HttpStatus.CREATED)
+//                .body(new ApiResponse<>(true, "새로운 작업이 생성되었습니다.", null));
+//    }
 
 }

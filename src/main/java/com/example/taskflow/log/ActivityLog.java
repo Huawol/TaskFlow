@@ -1,6 +1,7 @@
 package com.example.taskflow.log;
 
 import com.example.taskflow.common.BaseEntity;
+import com.example.taskflow.log.dto.request.ActivityLogCreateRequestDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,14 +42,12 @@ public class ActivityLog extends BaseEntity {
     //논리적  삭제
     private Boolean deleted = false;
 
-//    public static ActivityLog from(ActivityLogCreateRequestDto requestDto){
-//        return ActivityLog.builder()
-//                .timestamp(LocalDateTime.now())
-//                .userId(requestDto.getUserId())
-//                .ipAddress(requestDto.getIpAddress())
-//                .httpMethod(requestDto.getHttpMethod())
-//                .url(requestDto.ur)
-//                .activityType(requestDto.getActivityType())
-//                .
-//    }
+    public static ActivityLog from(ActivityLogCreateRequestDto requestDto){
+        return ActivityLog.builder()
+                .userId(requestDto.getUserId())
+                .target_id(requestDto.getTargetId())
+                .activityType(requestDto.getActivityType())
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
 }
