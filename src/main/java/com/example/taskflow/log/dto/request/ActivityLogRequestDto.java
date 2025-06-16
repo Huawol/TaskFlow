@@ -1,7 +1,6 @@
 package com.example.taskflow.log.dto.request;
 
-import com.example.taskflow.log.ActivityType;
-import jakarta.validation.constraints.NotNull;
+import com.example.taskflow.log.entity.ActivityType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

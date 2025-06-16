@@ -19,3 +19,6 @@ jwt:
   secret-key: "S2VrMjlmanNkXzEhYUpkbGxmMDNzZGZRdzhYbnp2MDkmREZhMjl3QHNhTGs="
   bearer-prefix: "Bearer "
 
+logging:
+  level:
+    com.example.taskflow: INFO

@@ -1,10 +1,13 @@
-package com.example.taskflow.log;
+package com.example.taskflow.log.service;
 
 
 import com.example.taskflow.common.exception.LogNotFoundException;
+import com.example.taskflow.log.repository.ActivityRepository;
+import com.example.taskflow.log.entity.ActivityType;
 import com.example.taskflow.log.dto.request.ActivityLogCreateRequestDto;
 import com.example.taskflow.log.dto.request.ActivityLogRequestDto;
 import com.example.taskflow.log.dto.response.ActivityLogResponseDto;
+import com.example.taskflow.log.entity.ActivityLog;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -38,9 +41,6 @@ import java.time.LocalTime;
         ActivityLog log = ActivityLog.create(requestDto,newedDescription);
         activityRepository.save(log);
     }
-
-
-
 
     //전체조회 + 조건 별 조회
     @Transactional(readOnly = true)

@@ -1,5 +1,7 @@
-package com.example.taskflow.log;
+package com.example.taskflow.log.repository;
 
+import com.example.taskflow.log.entity.ActivityType;
+import com.example.taskflow.log.entity.ActivityLog;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

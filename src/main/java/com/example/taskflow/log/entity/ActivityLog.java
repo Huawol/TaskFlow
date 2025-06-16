@@ -1,4 +1,4 @@
-package com.example.taskflow.log;
+package com.example.taskflow.log.entity;
 
 import com.example.taskflow.common.BaseEntity;
 import com.example.taskflow.log.dto.request.ActivityLogCreateRequestDto;
@@ -51,7 +51,7 @@ public class ActivityLog extends BaseEntity {
     public void softDelete() {
         this.deleted = true;
     }
-    
+
     public static ActivityLog create(ActivityLogCreateRequestDto requestDto, String newDescription){
         return ActivityLog.builder()
                 .userId(requestDto.getUserId())

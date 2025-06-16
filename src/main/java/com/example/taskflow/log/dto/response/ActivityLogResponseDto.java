@@ -1,7 +1,7 @@
 package com.example.taskflow.log.dto.response;
 
-import com.example.taskflow.log.ActivityLog;
-import com.example.taskflow.log.ActivityType;
+import com.example.taskflow.log.entity.ActivityLog;
+import com.example.taskflow.log.entity.ActivityType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

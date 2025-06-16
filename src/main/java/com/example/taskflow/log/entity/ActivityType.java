@@ -1,4 +1,4 @@
-package com.example.taskflow.log;
+package com.example.taskflow.log.entity;
 
 import com.example.taskflow.log.dto.request.ActivityLogCreateRequestDto;
 
