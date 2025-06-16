@@ -15,6 +15,6 @@ public class ActivityLogController {
 
     private final ActivityService activityService;
 
-    @PostMapping
-    public ResponseEntity<ApiResponse<LogCreateRequestDto>>
+//    @PostMapping
+//    public ResponseEntity<ApiResponse<LogCreateRequestDto>>
 }
