@@ -3,6 +3,9 @@ package com.example.taskflow.security;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Component;
 
+
+
+//Bcrypt를 이용한 비밀번호 암호화 및 검증
 @Component
 public class PasswordEncoder {
 
@@ -11,7 +14,6 @@ public class PasswordEncoder {
     }
 
     public boolean matches(String rawPassword, String encodedPassword) {
-        BCrypt.Result result = BCrypt.verifyer().verify(rawPassword.toCharArray(), encodedPassword);
-        return result.verified;
+        return BCrypt.verifyer().verify(rawPassword.toCharArray(), encodedPassword).verified;
     }
 }

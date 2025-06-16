@@ -26,4 +26,3 @@ public class UserController {
         return ResponseEntity.ok("회원탈퇴 완료");
     }
 }
-
