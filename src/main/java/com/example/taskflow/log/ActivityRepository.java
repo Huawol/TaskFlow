@@ -11,11 +11,21 @@ public interface ActivityRepository extends JpaRepository<ActivityLog, Long> {
 
     Page<ActivityLog> findByTimestampBetweenAndDeletedFalse(LocalDateTime start, LocalDateTime end, Pageable pageable);
 
-    Page<ActivityLog> findByActivityTypeAndTimestampAndDeletedFalse(ActivityType activityType,LocalDateTime localDateTime, LocalDateTime localDateTime1, Pageable pageable);
+    //userId + 날짜
+    Page<ActivityLog> findByUserIdAndTimestampAndDeletedFalse(Long userId, LocalDateTime start, LocalDateTime end, Pageable pageable);
 
-    Page<ActivityLog> findByUserIdAndTimestampAndDeletedFalse(Long UserId, LocalDateTime localDateTime, LocalDateTime localDateTime1, Pageable pageable);
+    //활동 유형 + 날짜
+    Page<ActivityLog> findByActivityTypeAndTimestampAndDeletedFalse(ActivityType type, LocalDateTime start, LocalDateTime end, Pageable pageable);
 
-    Page<ActivityLog> findByActivityTypeAndDeletedFalse(ActivityType activityType,Pageable pageable);
+    //userId +활동 유형,날짜필터
+    Page<ActivityLog> findByUserIdAndActivityTypeAndTimestampAndDeletedFalse(Long userId, ActivityType type, LocalDateTime start, LocalDateTime end, Pageable pageable);
 
+    //userId + 활동유형
+    Page<ActivityLog> findByUserIdAndActivityTypeAndDeletedFalse(Long userId, ActivityType type, Pageable pageable);
+
+    //사용자만
     Page<ActivityLog> findByUserIdAndDeletedFalse(Long userId, Pageable pageable);
+
+    //활동유형만
+    Page<ActivityLog> findByActivityTypeAndDeletedFalse(ActivityType type, Pageable pageable);
 }

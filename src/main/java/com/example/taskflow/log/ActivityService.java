@@ -13,13 +13,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Optional;
 
-@Service
-@RequiredArgsConstructor
-@Transactional
-public class ActivityService {
+    @Service
+    @RequiredArgsConstructor
+    @Transactional
+    public class ActivityService {
 
     private final ActivityRepository activityRepository;
 
@@ -42,70 +42,42 @@ public class ActivityService {
 
 
 
-    //전체조회
+    //전체조회 + 조건 별 조회
     @Transactional(readOnly = true)
-    public Page<ActivityLogResponseDto> findAll(ActivityLogRequestDto requestDto, Pageable pageable) {
-        LocalDate startDate = requestDto.getStartDate();
-        LocalDate endDate = requestDto.getEndDate();
-
-        Page<ActivityLog> logs;
-
-        if (startDate != null && endDate != null) {
-            logs = activityRepository.findByTimestampBetweenAndDeletedFalse(
-                    startDate.atStartOfDay(),
-                    endDate.atTime(LocalTime.MAX),
-            pageable);
-             } else {
-            logs = activityRepository.findByDeletedFalse(pageable);
-        }
-
-        return logs.map(ActivityLogResponseDto::toDto);
-    }
-
-    //타입유형별 조회
-    @Transactional(readOnly = true)
-    public Page<ActivityLogResponseDto> findActivityType(@Valid ActivityLogRequestDto requestDto, Pageable pageable) {
+    public Page<ActivityLogResponseDto> searchLogs(@Valid ActivityLogRequestDto requestDto, Pageable pageable) {
         LocalDate startDate = requestDto.getStartDate();
         LocalDate endDate = requestDto.getEndDate();
         ActivityType activityType = requestDto.getActivityType();
-
-        Page<ActivityLog> logs;
-
-        if (activityType != null && startDate != null && endDate != null) {
-            logs = activityRepository.findByActivityTypeAndTimestampAndDeletedFalse(
-                    activityType,
-                    startDate.atStartOfDay(),
-                    endDate.atTime(LocalTime.MAX),
-                    pageable);
-        } else if (activityType != null) {
-            logs = activityRepository.findByActivityTypeAndDeletedFalse(activityType, pageable);
-        } else {
-           logs = activityRepository.findByDeletedFalse(pageable);
-        }
-        return logs.map(ActivityLogResponseDto::toDto);
-    }
-    //유저아이디별 조회
-    @Transactional(readOnly = true)
-    public Page<ActivityLogResponseDto> findActivityUserId(@Valid ActivityLogRequestDto requestDto, Pageable pageable) {
-        LocalDate startDate = requestDto.getStartDate();
-        LocalDate endDate = requestDto.getEndDate();
         Long userId = requestDto.getUserId();
 
         Page<ActivityLog> logs;
 
-        if (userId != null && startDate != null && endDate != null) {
-            logs = activityRepository.findByUserIdAndTimestampAndDeletedFalse(
-                    userId,
-                    startDate.atStartOfDay(),
-                    endDate.atTime(LocalTime.MAX),
-                    pageable);
-        } else if (userId != null) {
-            logs = activityRepository.findByUserIdAndDeletedFalse(userId, pageable);
-        } else {
+        // 날짜가 있으면 범위 계산 날짜 입력 시 ->LocalDateTime 변환
+        boolean hasDateRange = startDate != null && endDate != null;
+        //날짜 범위 조건 있는지 판별 <조건> ? <참 때 값> : <거짓 떄 값>
+        LocalDateTime from = hasDateRange ? startDate.atStartOfDay() : null;
+        LocalDateTime to = hasDateRange ? endDate.atTime(LocalTime.MAX) : null;
+
+        //조건 별 쿼리 선택
+        if (userId != null && activityType != null && hasDateRange){//userId +활동 유형,날짜필터
+            logs = activityRepository.findByUserIdAndActivityTypeAndTimestampAndDeletedFalse(userId, activityType, from, to, pageable);
+        } else if (userId != null && hasDateRange) { //userId + 날짜
+            logs = activityRepository.findByUserIdAndTimestampAndDeletedFalse(userId,from,to,pageable);
+        } else if (activityType != null && hasDateRange) { //활동 유형 + 날짜
+            logs = activityRepository.findByActivityTypeAndTimestampAndDeletedFalse(activityType,from,to,pageable);
+        } else if (userId != null && activityType != null) { //userId + 활동유형
+            logs = activityRepository.findByUserIdAndActivityTypeAndDeletedFalse(userId,activityType,pageable);
+        } else if (userId != null) { //사용자만
+            logs = activityRepository.findByUserIdAndDeletedFalse(userId,pageable);
+        } else if (activityType != null) { //활동유형만
+            logs = activityRepository.findByActivityTypeAndDeletedFalse(activityType,pageable);
+        } else if (hasDateRange) { //날짜만
+           logs = activityRepository.findByTimestampBetweenAndDeletedFalse(from,to,pageable);
+        } else { //전체 조회
             logs = activityRepository.findByDeletedFalse(pageable);
         }
         return logs.map(ActivityLogResponseDto::toDto);
-    }
+        }
 
     //업데이트
     public void updateLog(Long id, @Valid String newDescription) {

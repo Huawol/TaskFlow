@@ -1,12 +1,12 @@
 package com.example.taskflow.log;
 
 import com.example.taskflow.common.ApiResponse;
+import com.example.taskflow.log.dto.ActivityUpdateRequestDto;
 import com.example.taskflow.log.dto.request.ActivityLogCreateRequestDto;
 import com.example.taskflow.log.dto.request.ActivityLogRequestDto;
 import com.example.taskflow.log.dto.response.ActivityLogResponseDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -36,15 +36,15 @@ public class ActivityLogController {
     public ResponseEntity<ApiResponse<Page<ActivityLogResponseDto>>> readAllLogs(
             @ModelAttribute ActivityLogRequestDto requestDto,
             @PageableDefault(size = 10,sort = "timestamp",direction = Sort.Direction.DESC) Pageable pageable)  {
-        Page<ActivityLogResponseDto> result = activityService.findAll(requestDto, pageable);
+        Page<ActivityLogResponseDto> result = activityService.searchLogs(requestDto, pageable);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ApiResponse<>(true,"조회가 완료 되었습니다.",result));
     }
 
     @PatchMapping("/{id}")
     public  ResponseEntity<ApiResponse<String>> update(@PathVariable Long id,
-                                                       @Valid@RequestBody String description) {
-        activityService.updateLog(id,description);
+                                                       @Valid@RequestBody ActivityUpdateRequestDto requestDto) {
+        activityService.updateLog(id, requestDto.getDescription());
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ApiResponse<>(true,"수정되었습니다.",null));
     }
@@ -56,21 +56,4 @@ public class ActivityLogController {
                 .body(new ApiResponse<>(true,"삭제되었습니다.",null));
     }
 
-    //활동로그 유형별 조회
-//    @GetMapping("/byType")
-//    public ResponseEntity<ApiResponse<Page<ActivityLogResponseDto>>> readAllTypeLog(@Valid@RequestBody ActivityLogRequestDto requestDto,
-//                                                                              @PageableDefault(size = 10,sort = "timestamp",direction = Sort.Direction.DESC) Pageable pageable) {
-//        Page<ActivityLogResponseDto> result = activityService.findActivityType(requestDto, pageable);
-//        return ResponseEntity.status(HttpStatus.OK)
-//                .body(new ApiResponse<>(true,"유형 타입별 조회가 완료 되었습니다.",result));
-//    }
-//
-//    //활동로그 사용자 ID별 조회
-//    @GetMapping("/byUsers")
-//    public ResponseEntity<ApiResponse<Page<ActivityLogResponseDto>>> readAllUserIdLog(@Valid@RequestBody ActivityLogRequestDto requestDto,
-//                                                                                    @PageableDefault(size = 10,sort = "timestamp",direction = Sort.Direction.DESC) Pageable pageable) {
-//        Page<ActivityLogResponseDto> result = activityService.findActivityUserId(requestDto, pageable);
-//        return ResponseEntity.status(HttpStatus.OK)
-//                .body(new ApiResponse<>(true,"사용자별 조회가 완료 되었습니다.",result));
-//    }
 }
