@@ -40,4 +40,15 @@ public class ActivityLog extends BaseEntity {
 
     //논리적  삭제
     private Boolean deleted = false;
+
+//    public static ActivityLog from(ActivityLogCreateRequestDto requestDto){
+//        return ActivityLog.builder()
+//                .timestamp(LocalDateTime.now())
+//                .userId(requestDto.getUserId())
+//                .ipAddress(requestDto.getIpAddress())
+//                .httpMethod(requestDto.getHttpMethod())
+//                .url(requestDto.ur)
+//                .activityType(requestDto.getActivityType())
+//                .
+//    }
 }
