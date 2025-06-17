@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
-        User user = userRepository.findByUserNameAndDeletedFalse(loginRequestDto.getUsername())
+        User user = userRepository.findByUserNameAndDeletedFalse(loginRequestDto.getUserName())
                 .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 아이디입니다."));
 
         if (!passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword())) {

@@ -1,6 +1,6 @@
 package com.example.taskflow.user.service;
 
-import com.example.taskflow.security.PasswordEncoder;
+import com.example.taskflow.login.PasswordEncoder;
 import com.example.taskflow.user.entity.User;
 import com.example.taskflow.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
