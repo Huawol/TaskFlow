@@ -1,10 +1,11 @@
 package com.example.taskflow.comment.service;
 
 import com.example.taskflow.comment.repository.CommentRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.http.HttpStatus;
+
 import com.example.taskflow.comment.dto.response.FindAllCommentResponseDto;
 import com.example.taskflow.comment.dto.request.UpdateCommentRequestDto;
 import com.example.taskflow.comment.entity.Comment;
@@ -59,12 +60,12 @@ public class CommentService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "댓글 삭제 권한이 없습니다.");
         }
 
-        commentRepository.deleteById(commentId);
+        findComment.softDelete();
     }
 
 
     public List<FindAllCommentResponseDto> findAllComment() {
-        List<Comment> comments = commentRepository.findAll();
+        List<Comment> comments = commentRepository.findByDeletedFalse();
         return comments.stream().map(FindAllCommentResponseDto::toDto).toList();
     }
 
