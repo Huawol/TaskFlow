@@ -1,18 +1,26 @@
 package com.example.taskflow.task.service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.taskflow.comment.entity.Comment;
 import com.example.taskflow.comment.repository.CommentRepository;
 import com.example.taskflow.common.exception.TodoNotFoundException;
+import com.example.taskflow.common.exception.UserMismatchException;
 import com.example.taskflow.common.exception.UserNotFoundException;
+import com.example.taskflow.security.dto.AuthUserDto;
 import com.example.taskflow.task.dto.request.TaskCreateRequestDto;
 import com.example.taskflow.task.dto.request.TaskStatusRequestDto;
+import com.example.taskflow.task.dto.request.TaskUpdateRequestDto;
 import com.example.taskflow.task.dto.response.CommentSimpleResponseDto;
 import com.example.taskflow.task.dto.response.TaskResponseDto;
 import com.example.taskflow.task.dto.response.TaskWithCommentResponseDto;
@@ -36,12 +44,6 @@ public class TaskService {
 	private final CommentRepository commentRepository;
 
 	public TaskResponseDto saveTask(Long createdById, TaskCreateRequestDto requestDto) {
-		//테스트용 로직
-		User user1 = new User();
-		User user2 = new User();
-		userRepository.save(user1);
-		userRepository.save(user2);
-
 		//비즈니스 로직 시작
 		User createdUser = getUserOrThrow(userRepository.findById(createdById));
 		User assignedUser = getUserOrThrow(userRepository.findById(requestDto.getAssignedToId()));
@@ -62,7 +64,7 @@ public class TaskService {
 	}
 
 	//상태값 변경 메서드
-	public TaskWithCommentResponseDto changeStatusComment(Long id, TaskStatusRequestDto requestDto) {
+	public TaskWithCommentResponseDto changeStatusTask(Long id, TaskStatusRequestDto requestDto, AuthUserDto authUserDto) {
 		Task foundTask = getTaskOrThrow(taskRepository.findByIdAndDeletedFalse(id));
 
 		//변경을 원하는 상태값 enum 값으로 변경 후 검증 메서드 호출
@@ -84,6 +86,53 @@ public class TaskService {
 		return TaskWithCommentResponseDto.from(foundTask, commentSimpleResponses);
 	}
 
+	public TaskResponseDto changeTask(Long id, TaskUpdateRequestDto requestDto, AuthUserDto authUserDto) {
+		Long authId = authUserDto.getId();
+		Task foundTask = getTaskOrThrow(taskRepository.findByIdAndDeletedFalse(id));
+		if(!isTaskOwner(foundTask.getId(), authId)) {
+			throw new UserMismatchException("내가 작성하지 않은 게시물은 수정할 수 없습니다.");
+		}
+
+		//변경될 담당자 엔티티
+		User assignedChangeUser = getUserOrThrow(userRepository.findById(authId));
+
+		//변경사항 더티체킹
+		foundTask.updateTaskFrom(assignedChangeUser, requestDto.getTitle(), requestDto.getContent(), requestDto.getDeadline(), requestDto.getPriority());
+
+		return TaskResponseDto.from(foundTask);
+	}
+
+	public void softDeleteTask(Long id, AuthUserDto authUserDto) {
+		Long authId = authUserDto.getId();
+		Task foundTask = getTaskOrThrow(taskRepository.findByIdAndDeletedFalse(id));
+		if(!isTaskOwner(foundTask.getId(), authId)) {
+			throw new UserMismatchException("내가 작성하지 않은 게시물은 삭제할 수 없습니다.");
+		}
+
+		foundTask.softDelete(); //논리적 삭제 메서드 호출
+		foundTask.setDeletedAt(); //삭제 시각 기록
+	}
+
+	/*
+	날짜 기준으로 검색 메서드 LocalDate 로 받아 -> LocalDateTime 으로 변환시켜줘야함
+	날짜 데이터가 없을시 전체 페이징 리스트 반환
+	 */
+	public Page<TaskResponseDto> findPagedTasks(Pageable pageable, LocalDate periodStart, LocalDate periodEnd) {
+		//기간 설정 여부에 따라 다른 리포지터리 메서드 실행
+		Page<Task> tasks;
+		//시작기간, 종료기간 둘 중 하나라도 세팅이 안돼있을 시
+		if(periodStart == null || periodEnd == null) {
+			tasks = taskRepository.findAllByDeletedFalse(pageable);
+		} else {
+			//타입 일치를 위한 시간 세팅
+			tasks = taskRepository.findByCreatedAtBetweenAndDeletedFalse(periodStart.atStartOfDay(), periodEnd.atTime(
+				LocalTime.MAX), pageable);
+		}
+
+		//단건 조회에서만 코멘츠가 붙음 전체조회에선 변환해서 바로 반환
+		return tasks.map(TaskResponseDto::from);
+	}
+
 
 	// 헬퍼 메서드
 	private User getUserOrThrow(Optional<User> user) {
@@ -100,11 +149,18 @@ public class TaskService {
 	요청에 담긴 status 값이 요구사항에 충족하는지 검증하는 메서드
 	*/
 	private boolean inValidTransition(Status currentStatus, Status requestStatus) {
-
 		if(currentStatus.equals(Status.TODO) && requestStatus.equals(Status.IN_PROGRESS)) {
 			return true;
 		}
 		if(currentStatus.equals(Status.IN_PROGRESS) && requestStatus.equals(Status.DONE)) {
+			return true;
+		}
+		return false;
+	}
+
+	//인증객체의 id 값과 할일 생성자의 값 비교
+	private boolean isTaskOwner(Long taskId, Long authId) {
+		if (taskId.equals(authId)) {
 			return true;
 		}
 		return false;
