@@ -1,4 +1,4 @@
-package com.example.taskflow.login.dto;
+package com.example.taskflow.user.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

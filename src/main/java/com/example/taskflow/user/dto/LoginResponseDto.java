@@ -1,6 +1,6 @@
-package com.example.taskflow.login.dto;
+package com.example.taskflow.user.dto;
 
-import com.example.taskflow.common.User;
+import com.example.taskflow.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

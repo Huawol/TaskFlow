@@ -1,6 +1,5 @@
 package com.example.taskflow;
 
-import com.example.taskflow.login.dto.LoginRequestDto;
 import com.example.taskflow.security.config.JwtProperties;
 import com.example.taskflow.security.config.JwtUtil;
 import com.example.taskflow.security.dto.AuthUserDto;

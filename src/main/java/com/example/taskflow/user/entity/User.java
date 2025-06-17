@@ -1,34 +1,41 @@
 package com.example.taskflow.user.entity;
 
-import com.example.taskflow.common.BaseEntity;
+import com.example.taskflow.common.BaseEntity;  //BaseEntity 상속을 위해 import 추가
+import com.example.taskflow.security.enums.UserRole;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Entity
-@Table(name = "users", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
 @Getter
-@Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class User extends BaseEntity {
+@Entity
+@Setter
+@Table(name = "users")
+public class User extends BaseEntity {  //BaseEntity 상속 추가
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;  // PK: 사용자 ID
+    @GeneratedValue
+    @Column(name = "user_id")
+    private Long userId;
 
-    @Column(nullable = false, unique = true, length = 30)
-    private String username;  // 계정명 (unique)
+    private String email;
 
-    @Column(nullable = false, unique = true, length = 255)
-    private String email;  // 이메일 (unique)
+    private String password;
 
-    @Column(nullable = false)
-    private String password;  // 암호화된 비밀번호
+    private String userName;
 
-    @Column(nullable = false, length = 30)
-    private String name;  // 사용자 이름
+    private String name;
 
-    @Column(nullable = false, length = 10)
-    private String role;  // 사용자 역할 (USER / ADMIN)
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
+
+    public User( String email, String password, String userName, String name) {
+        this.email = email;
+        this.password = password;
+        this.userName = userName;
+        this.name = name;
+    }
+
+
 }
