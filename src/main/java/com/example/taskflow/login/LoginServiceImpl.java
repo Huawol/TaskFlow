@@ -1,5 +1,6 @@
 package com.example.taskflow.login;
 
+import com.example.taskflow.common.ApiResponse;
 import com.example.taskflow.common.SignUser;
 import com.example.taskflow.common.exception.LoginFailedException;
 import com.example.taskflow.login.dto.LoginRequestDto;
@@ -40,7 +41,7 @@ public class LoginServiceImpl implements LoginService {
     @Override
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
         SignUser signUser = loginRepository.findByUserNameAndDeletedFalse(loginRequestDto.getUserName())
-                .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 아이디입니다."));
+                .orElseThrow(() -> new UsernameNotFoundException("아이디가 틀리거나 가입되지 않은 아이디 입니다."));
 
         if (!passwordEncoder.matches(loginRequestDto.getPassword(), signUser.getPassword())) {
             throw new LoginFailedException("비밀번호가 일치하지 않습니다.");
