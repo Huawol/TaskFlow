@@ -52,4 +52,15 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ApiResponse<Void>> handlerPriorityTransitionException(PriorityTransitionException ex) {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<>(false, ex.getMessage(), null));
 	}
+
+	@ExceptionHandler(TaskNotFoundException.class)
+	public ResponseEntity<ApiResponse<Void>> handlerTaskNotFoundException(TaskNotFoundException ex) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<>(false, ex.getMessage(), null));
+	}
+
+	@ExceptionHandler(UserMismatchException.class)
+	public ResponseEntity<ApiResponse<Void>> handlerUserMismatchException(UserMismatchException ex) {
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse<>(false, ex.getMessage(), null));
+	}
+
 }
