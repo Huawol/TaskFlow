@@ -1,6 +1,6 @@
 package com.example.taskflow.login.dto;
 
-import com.example.taskflow.common.User;
+import com.example.taskflow.common.SignUser;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,11 +18,11 @@ public class LoginResponseDto {
     private final String name;
     private final LocalDateTime createdAt;
 
-    public LoginResponseDto(User user) {
-        this.id = user.getUserId();
-        this.username = user.getUserName();
-        this.email = user.getEmail();
-        this.name = user.getName();
-        this.createdAt = user.getCreatedAt();
+    public LoginResponseDto(SignUser signUser) {
+        this.id = signUser.getUserId();
+        this.username = signUser.getUserName();
+        this.email = signUser.getEmail();
+        this.name = signUser.getName();
+        this.createdAt = signUser.getCreatedAt();
     }
 }

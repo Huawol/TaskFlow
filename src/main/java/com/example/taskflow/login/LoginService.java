@@ -5,7 +5,7 @@ import com.example.taskflow.login.dto.LoginResponseDto;
 import com.example.taskflow.login.dto.SignupRequestDto;
 import com.example.taskflow.login.dto.SignupResponseDto;
 
-public interface UserService {
+public interface LoginService {
 
     SignupResponseDto signUp(SignupRequestDto signupRequestDto);
     LoginResponseDto login(LoginRequestDto loginRequestDto);

@@ -18,7 +18,7 @@ public class User extends BaseEntity {
     private Long Id;  // PK: 사용자 ID
 
     @Column(nullable = false, unique = true, length = 30)
-    private String username;  // 계정명 (unique)
+    private String userName;  // 계정명 (unique)
 
     @Column(nullable = false, unique = true, length = 255)
     private String email;  // 이메일 (unique)

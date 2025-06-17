@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
-public class UserController {
+public class LoginController {
 
-    private final UserServiceImpl userServiceImpl;
+    private final LoginServiceImpl userServiceImpl;
     private final JwtUtil jwtUtil;
 
     @PostMapping("/signup")

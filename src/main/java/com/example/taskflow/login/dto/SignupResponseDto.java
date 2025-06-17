@@ -1,6 +1,6 @@
 package com.example.taskflow.login.dto;
 
-import com.example.taskflow.common.User;
+import com.example.taskflow.common.SignUser;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -13,10 +13,10 @@ public class SignupResponseDto {
     private final String name;
     private final LocalDateTime createdAt;
 
-    public SignupResponseDto(User user) {
-        this.id = user.getUserId();
-        this.email = user.getEmail();
-        this.name = user.getUserName();
-        this.createdAt = user.getCreatedAt();
+    public SignupResponseDto(SignUser signUser) {
+        this.id = signUser.getUserId();
+        this.email = signUser.getEmail();
+        this.name = signUser.getUserName();
+        this.createdAt = signUser.getCreatedAt();
     }
 }

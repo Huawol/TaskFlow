@@ -43,7 +43,7 @@ public class UserService {
 
         // 사용자 저장
         User user = User.builder()
-                .username(username)
+                .userName(username)
                 .email(email)
                 .password(passwordEncoder.encode(password))
                 .name(name)
