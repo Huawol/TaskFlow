@@ -32,11 +32,10 @@ public class TaskController {
 	@PostMapping
 	public ResponseEntity<ApiResponse<TaskResponseDto>> createTask(@Valid @RequestBody TaskCreateRequestDto requestDto) {
 		//시큐리티 없으니 테스트용 임시 객체를 사용 -> userDetails 가 될 예정
-		User createdBy = new User();
-		createdBy.setId(1L);
+		Long AuthId = 1L;
 
 		return ResponseEntity.status(HttpStatus.CREATED)
-			.body(new ApiResponse<>(true, "정상적으로 할일이 생성되었습니다.", taskService.saveTask(createdBy.getId(), requestDto)));
+			.body(new ApiResponse<>(true, "정상적으로 할일이 생성되었습니다.", taskService.saveTask(AuthId, requestDto)));
 	}
 
 	@GetMapping("/{id}")

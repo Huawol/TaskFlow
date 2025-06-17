@@ -1,6 +1,5 @@
 package com.example.taskflow.common.exception;
 
-import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 import com.sun.jdi.request.DuplicateRequestException;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.example.taskflow.common.ApiResponse;
+import com.sun.jdi.request.DuplicateRequestException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -47,9 +47,9 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(DuplicateRequestException.class)
 	public ResponseEntity<ApiResponse<Void>> handlerDuplicate(DuplicateRequestException ex) {
 		ApiResponse<Void> response = new ApiResponse<>(
-				false,
-				ex.getMessage(),
-				null
+			false,
+			ex.getMessage(),
+			null
 		);
 		return ResponseEntity.badRequest().body(response);
 	}
@@ -63,5 +63,5 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ApiResponse<Void>> handlerLoginFailedException(LoginFailedException ex) {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<>(false, ex.getMessage(), null));
 	}
-  
+
 }
