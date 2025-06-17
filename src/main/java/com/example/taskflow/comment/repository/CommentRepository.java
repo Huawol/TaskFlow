@@ -1,13 +1,17 @@
 package com.example.taskflow.comment.repository;
 
-import java.util.List;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.taskflow.comment.entity.Comment;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Repository;
+import org.springframework.web.server.ResponseStatusException;
 
-//테스트용 임시 리포지터리
+
+@Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
+	default Comment findByIdOrElseThrow(Long commentId) {
+		return findById(commentId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + commentId));
+	}
 
-	List<Comment> findByTaskIdAndDeletedFalse(Long taskId);
 }
