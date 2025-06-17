@@ -30,6 +30,7 @@ import com.example.taskflow.task.dto.request.TaskUpdateRequestDto;
 import com.example.taskflow.task.dto.response.TaskResponseDto;
 import com.example.taskflow.task.dto.response.TaskWithCommentResponseDto;
 import com.example.taskflow.task.service.TaskService;
+import com.example.taskflow.user.entity.User;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

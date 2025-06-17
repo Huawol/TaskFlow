@@ -3,7 +3,6 @@ package com.example.taskflow.comment.entity;
 import com.example.taskflow.common.BaseEntity;
 import com.example.taskflow.task.entity.Task;
 import com.example.taskflow.user.entity.User;
-
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -11,7 +10,10 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
+
+
 import java.util.Optional;
+
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
