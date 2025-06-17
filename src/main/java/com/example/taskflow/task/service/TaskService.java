@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.taskflow.comment.entity.Comment;
 import com.example.taskflow.comment.repository.CommentRepository;
+import com.example.taskflow.common.exception.TaskNotFoundException;
 import com.example.taskflow.common.exception.TodoNotFoundException;
 import com.example.taskflow.common.exception.UserMismatchException;
 import com.example.taskflow.common.exception.UserNotFoundException;
@@ -133,14 +134,13 @@ public class TaskService {
 		return tasks.map(TaskResponseDto::from);
 	}
 
-
 	// 헬퍼 메서드
 	private User getUserOrThrow(Optional<User> user) {
 		return user.orElseThrow(() -> new UserNotFoundException("ID 값과 일치하는 유저를 찾을 수 없습니다."));
 	}
 
 	private Task getTaskOrThrow(Optional<Task> todo) {
-		return todo.orElseThrow(() -> new TodoNotFoundException("ID 값과 일치하는 유저를 찾을 수 없습니다."));
+		return todo.orElseThrow(() -> new TaskNotFoundException("ID 값과 일치하는 할일을 찾을 수 없습니다."));
 	}
 
 	/*

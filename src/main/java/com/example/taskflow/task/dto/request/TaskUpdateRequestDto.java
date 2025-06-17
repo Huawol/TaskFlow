@@ -21,7 +21,7 @@ public class TaskUpdateRequestDto {
 	private String content;
 
 	@JsonFormat(pattern = "yyyyMMdd")
-	@NotBlank(message = "마감일을 설정해주세요.")
+	@NotNull(message = "마감일을 설정해주세요.")
 	private LocalDate deadline;
 
 	@NotBlank(message = "중요도를 설정해주세요")
