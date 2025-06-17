@@ -68,7 +68,7 @@ public class TaskController {
 	//날짜 검색 기능
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping
-	public ResponseEntity<Page<ApiResponse<TaskResponseDto>>> getPagedTasks(
+	public ResponseEntity<ApiResponse<Page<TaskResponseDto>>> getPagedTasks(
 		@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
 		@RequestParam @DateTimeFormat(pattern = "yyyyMMdd")LocalDate periodStart, @RequestParam @DateTimeFormat(pattern = "yyyyMMdd")LocalDate periodEnd
 	) {
