@@ -2,6 +2,7 @@ package com.example.taskflow.log.service;
 
 
 import com.example.taskflow.common.exception.LogNotFoundException;
+import com.example.taskflow.log.aop.TrackTime;
 import com.example.taskflow.log.repository.ActivityRepository;
 import com.example.taskflow.log.entity.ActivityType;
 import com.example.taskflow.log.dto.request.ActivityLogCreateRequestDto;
@@ -28,11 +29,13 @@ import java.time.LocalTime;
 
 
     //타입유형별 메세지
+
     private String newDescription(ActivityLogCreateRequestDto requestDto) {
         return requestDto.getActivityType().description(requestDto);
     }
 
     //로그저장
+    @TrackTime
     public void save(ActivityLogCreateRequestDto requestDto) {
 
         //활동 유형에 따라 메세지 생성
@@ -44,6 +47,7 @@ import java.time.LocalTime;
 
     //전체조회 + 조건 별 조회
     @Transactional(readOnly = true)
+    @TrackTime
     public Page<ActivityLogResponseDto> searchLogs(@Valid ActivityLogRequestDto requestDto, Pageable pageable) {
         LocalDate startDate = requestDto.getStartDate();
         LocalDate endDate = requestDto.getEndDate();
@@ -80,6 +84,7 @@ import java.time.LocalTime;
         }
 
     //업데이트
+    @TrackTime
     public void updateLog(Long id, @Valid String newDescription) {
         ActivityLog log = activityRepository.findById(id)
                 .orElseThrow(() -> new LogNotFoundException("로그가 존재하지 않습니다."));
@@ -88,6 +93,7 @@ import java.time.LocalTime;
     }
 
     //논리삭제
+    @TrackTime
     public void deleteLog(Long id) {
         ActivityLog log = activityRepository.findById(id)
                 .orElseThrow(() -> new LogNotFoundException("로그가 존재하지 않습니다."));

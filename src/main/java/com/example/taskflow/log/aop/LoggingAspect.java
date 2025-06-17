@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -12,7 +13,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class LoggingAspect {
 
-    @Around("execution(* com.example.taskflow.log.service.ActivityService.*(..))")
+    @Pointcut("@annotation(com.example.taskflow.log.aop.TrackTime)")
+    public void trackTimePointcut() {}
+
+    @Around("trackTimePointcut()")
     public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
 
         String methodName = joinPoint.getSignature().toShortString();
