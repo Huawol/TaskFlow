@@ -5,11 +5,13 @@ import java.util.stream.Collectors;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.example.taskflow.common.ApiResponse;
+import com.sun.jdi.request.DuplicateRequestException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -39,6 +41,26 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(TodoNotFoundException.class)
 	public ResponseEntity<ApiResponse<Void>> handlerTodoNotFoundException(TodoNotFoundException ex) {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>(false, ex.getMessage(), null));
+	}
+
+	@ExceptionHandler(DuplicateRequestException.class)
+	public ResponseEntity<ApiResponse<Void>> handlerDuplicate(DuplicateRequestException ex) {
+		ApiResponse<Void> response = new ApiResponse<>(
+			false,
+			ex.getMessage(),
+			null
+		);
+		return ResponseEntity.badRequest().body(response);
+	}
+
+	@ExceptionHandler(UsernameNotFoundException.class)
+	public ResponseEntity<ApiResponse<Void>> handlerUserIdNotFoundException(UsernameNotFoundException ex) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<>(false, ex.getMessage(), null));
+	}
+
+	@ExceptionHandler(LoginFailedException.class)
+	public ResponseEntity<ApiResponse<Void>> handlerLoginFailedException(LoginFailedException ex) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<>(false, ex.getMessage(), null));
 	}
   
 }

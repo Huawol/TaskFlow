@@ -44,7 +44,8 @@ public class SecurityConfig {
                         // 유저 및 로그인 인가
                         .requestMatchers(HttpMethod.POST, "/api/users/signup").permitAll() // 회원가입
                         .requestMatchers(HttpMethod.GET, "/api/users/login").permitAll() // 로그인 //http://localhost:8080/login // 인증인가를 확인하지 않고 전부 허용
-                        .requestMatchers(HttpMethod.POST, "/api/profiles").hasRole(UserRole.USER.name()) // 프로필 조회
+                        .requestMatchers(HttpMethod.DELETE, "/api/users/me").hasRole(UserRole.USER.name()) //
+                        .requestMatchers(HttpMethod.POST, "/api/users/logout").hasRole(UserRole.USER.name()) // 프로필 조회
 
                         // 할일 인가
                         .requestMatchers(HttpMethod.POST, "/api/tasks").hasRole(UserRole.USER.name()) // 생성
