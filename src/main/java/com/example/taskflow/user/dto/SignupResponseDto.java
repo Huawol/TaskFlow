@@ -9,15 +9,15 @@ import java.time.LocalDateTime;
 @Getter
 public class SignupResponseDto {
 
-    private final Long id;
-    private final String email;
-    private final String name;
-    private final LocalDateTime createdAt;
+	private final Long id;
+	private final String email;
+	private final String name;
+	private final LocalDateTime createdAt;
 
-    public SignupResponseDto(User user) {
-        this.id = user.getUserId();
-        this.email = user.getEmail();
-        this.name = user.getUserName();
-        this.createdAt = user.getCreatedAt();
-    }
+	public SignupResponseDto(User user) {
+		this.id = user.getId();
+		this.email = user.getEmail();
+		this.name = user.getUserName();
+		this.createdAt = user.getCreatedAt();
+	}
 }

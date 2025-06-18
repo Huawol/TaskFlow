@@ -17,7 +17,7 @@ public class User extends BaseEntity {  //BaseEntity 상속 추가
     @Id
     @GeneratedValue
     @Column(name = "user_id")
-    private Long userId;
+    private Long id;
 
     private String email;
 

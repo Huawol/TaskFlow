@@ -12,17 +12,17 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class LoginResponseDto {
 
-    private final Long id;
-    private final String username;
-    private final String email;
-    private final String name;
-    private final LocalDateTime createdAt;
+	private final Long id;
+	private final String username;
+	private final String email;
+	private final String name;
+	private final LocalDateTime createdAt;
 
-    public LoginResponseDto(User user) {
-        this.id = user.getUserId();
-        this.username = user.getUserName();
-        this.email = user.getEmail();
-        this.name = user.getName();
-        this.createdAt = user.getCreatedAt();
-    }
+	public LoginResponseDto(User user) {
+		this.id = user.getId();
+		this.username = user.getUserName();
+		this.email = user.getEmail();
+		this.name = user.getName();
+		this.createdAt = user.getCreatedAt();
+	}
 }

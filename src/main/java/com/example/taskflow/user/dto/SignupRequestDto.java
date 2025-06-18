@@ -7,15 +7,15 @@ import lombok.Getter;
 @Getter
 public class SignupRequestDto {
 
-    @NotNull
-    private String email;
+	@NotNull
+	private String email;
 
-    @NotNull
-    private String password;
+	@NotNull
+	private String password;
 
-    @NotBlank
-    private String userName;
+	@NotBlank
+	private String userName;
 
-    @NotNull
-    private String name;
+	@NotNull
+	private String name;
 }

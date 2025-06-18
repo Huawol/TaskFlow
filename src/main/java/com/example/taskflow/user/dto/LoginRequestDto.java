@@ -7,9 +7,9 @@ import lombok.Getter;
 @Getter
 public class LoginRequestDto {
 
-    @NotNull
-    private String userName;
+	@NotNull
+	private String userName;
 
-    @NotBlank
-    private String password;
+	@NotBlank
+	private String password;
 }

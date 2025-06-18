@@ -12,7 +12,7 @@ import lombok.Setter;
 @Entity
 @NoArgsConstructor
 @Table(name = "users")
-public class User extends BaseEntity {
+public class SignUser extends BaseEntity {
 
     @Id
     @GeneratedValue
@@ -30,7 +30,7 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
-    public User( String email, String password, String userName, String name) {
+    public SignUser(String email, String password, String userName, String name) {
         this.email = email;
         this.password = password;
         this.userName = userName;
