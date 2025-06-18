@@ -2,6 +2,7 @@ package com.example.taskflow.dashboard.service;
 
 
 import com.example.taskflow.dashboard.dto.*;
+//import com.example.taskflow.dashboard.repository.ActivityLogRepository;
 import com.example.taskflow.dashboard.repository.ActivityLogRepository;
 import com.example.taskflow.dashboard.repository.TaskStatisticsRepository;
 import com.example.taskflow.task.entity.Status;
@@ -15,8 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Year;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -85,32 +84,6 @@ public class DashboardService {
     }
 
 
-//    public List<TaskSimpleResponseDto> getMyTasksByDate(Long userId, LocalDate date) {
-//        List<Task> tasks = taskStatisticsRepository.findAllByUserIdAndDate(
-//                userId,
-//                date,
-//                List.of(Status.TODO, Status.IN_PROGRESS));
-//        return tasks.stream()
-//                .map(TaskSimpleResponseDto::from)
-//                .collect(Collectors.toList());
-//
-//    }
-
-
-    //최근 1주(월~일) 트렌드 반환
-    public List<DailyTaskTrendDto> getWeeklyTrend(LocalDate today) {
-
-        //이번주 월요일 00:00
-        LocalDate monday = today.with(java.time.DayOfWeek.MONDAY);
-        LocalDateTime start = monday.atStartOfDay();
-        //다음 주 월요일 00:00
-        LocalDateTime end = monday.plusWeeks(1).atStartOfDay();
-
-
-        return taskStatisticsRepository.fetchDailyTrend(start, end);
-
-    }
-
     public TaskStatusRatioDto getStatusRatio() {
 
         List<TaskStatusCountDto> result = taskStatisticsRepository.countGroupByStatus();
@@ -131,24 +104,19 @@ public class DashboardService {
 
     public ProgressRatioDto getProgressRatio(Long userId) {
 
-        //내 상태별 카운트
         Map<Status, Long> myMap = toMap(taskStatisticsRepository.countMyStatus(userId));
-
-        //팀 상태별 카운트
-        Map<Status, Long> teamMap = toMap(taskStatisticsRepository.countTeamStatus());
-
 
         long myDone = myMap.getOrDefault(Status.DONE, 0L);
         long myTotal = myMap.values().stream().mapToLong(Long::longValue).sum();
 
-        long teamDone = teamMap.getOrDefault(Status.DONE, 0L);
-        long teamTotal = teamMap.values().stream().mapToLong(Long::longValue).sum();
+        double myRate  = rate(myDone,   myTotal);
 
-        double myRate   = rate(myDone,   myTotal);
-        double teamRate = rate(teamDone, teamTotal);
+        return ProgressRatioDto.of(myRate);
 
-        return ProgressRatioDto.of(myRate, teamRate);
+    }
 
+    public List<Task> getTaskByStatus(Status status) {
+        return taskStatisticsRepository.searchTaskByStatus_Todo(status);
     }
 
 
@@ -163,25 +131,7 @@ public class DashboardService {
 
     }
 
-
-    public List<MonthlyTaskTrendDto> getMonthlyTrend() {
-        int year = Year.now().getValue();
-        List<MonthlyTaskTrendDto> result = taskStatisticsRepository.fetchFixedMonthlyTrend(year);
-
-        Map<Integer, MonthlyTaskTrendDto> map = result.stream()
-                .collect(Collectors.toMap(
-                        MonthlyTaskTrendDto::getMonth,
-                        dto -> dto
-                ));
-
-        List<MonthlyTaskTrendDto> fullYear = new ArrayList<>();
-        for (int m = 1; m <= 12; m++) {
-            fullYear.add(map.getOrDefault(m, MonthlyTaskTrendDto.of(m, 0, 0)));
-        }
-
-        return fullYear;
-
-    }
+//    }
 
     //로그 기록 가져오기 // 로그쪽 되는거 보고 수정
     public List<ActivityLogDto> getAcitivityFeed() {
@@ -193,4 +143,5 @@ public class DashboardService {
 
         return activityLogRepository.fetchFeed(from, to, topFive);
     }
+
 }

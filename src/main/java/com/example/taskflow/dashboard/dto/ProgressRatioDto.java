@@ -9,5 +9,4 @@ import lombok.Getter;
 public class ProgressRatioDto {
 
     private double myProgressRate;
-    private double teamProgressRate;
 }

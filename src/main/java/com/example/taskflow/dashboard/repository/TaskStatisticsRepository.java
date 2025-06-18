@@ -17,6 +17,14 @@ import java.util.List;
 @Repository
 public interface TaskStatisticsRepository extends JpaRepository<Task, Long> {
 
+    @Query("""
+            SELECT t
+            FROM Task t
+            WHERE t.status = :status
+            """
+    )
+    List<Task> searchTaskByStatus_Todo(@Param("status") Status status);
+
     //기간 내 전체 task 개수
     @Query("""
             SELECT COUNT(t)
@@ -51,7 +59,7 @@ public interface TaskStatisticsRepository extends JpaRepository<Task, Long> {
             AND DATE(t.deadline) = :date 
             AND t.status IN (:statuses)
             AND t.deleted = false
-                        """)
+            """)
     List<Task> findAllByUserIdAndDate(@Param("userId") Long userId,
                                       @Param("date") LocalDate date,
                                       @Param("statuses") List<Status> statuses);
@@ -67,26 +75,8 @@ public interface TaskStatisticsRepository extends JpaRepository<Task, Long> {
             """)
     long countOverdueTasks(@Param("statuses") List<Status> statuses, @Param("now") LocalDateTime now);
 
-
-    /*최근 7일간 날짜 별 태스크 생성 갯수 및 완료 수
-    일별 작업 트렌드 그래프 용 (createdAt 기준)*/
-    @Query("""
-                SELECT new com.example.taskflow.dashboard.dto.DailyTaskTrendDto(
-                 function('date', t.createdAt),      
-                 COUNT(t),              
-                 SUM(CASE WHEN t.status ='DONE' THEN 1L ELSE 0L END)
-                 )
-                 FROM Task t
-                 WHERE t.createdAt BETWEEN :start AND :end
-                    AND t.deleted = false
-                    GROUP BY function('date', t.createdAt)
-                    ORDER BY function('date', t.createdAt)
-            """)
-    List<DailyTaskTrendDto> fetchDailyTrend(@Param("start") LocalDateTime start,
-                                            @Param("end") LocalDateTime end);
-
-    /*전체 태스크 상태별 개수 통계
-    전체 비율 통계 계산용*/
+//    /*전체 태스크 상태별 개수 통계
+//    전체 비율 통계 계산용*/
     @Query("""
                 SELECT new com.example.taskflow.dashboard.dto.TaskStatusCountDto(
                     t.status,
@@ -98,46 +88,15 @@ public interface TaskStatisticsRepository extends JpaRepository<Task, Long> {
             """)
     List<TaskStatusCountDto> countGroupByStatus();
 
-
     //특정 유저(로그인 한 사용자)의 상태별 태스크 개수(개인 비율 계산용)
     @Query("""
                      SELECT new com.example.taskflow.dashboard.dto.TaskStatusCountDto(
                                 t.status, COUNT(t))
                      FROM Task t
-                     WHERE t.assignedTo = :userId
+                     WHERE t.assignedTo.id = :userId
                      AND t.deleted = false
                      GROUP BY t.status
             """)
     List<TaskStatusCountDto> countMyStatus(@Param("userId") Long userId);
 
-
-    //전체 팀의 상태별 태스크 개수 (팀 비율 계산용)
-    @Query("""
-                SELECT new com.example.taskflow.dashboard.dto.TaskStatusCountDto(
-                       t.status,
-                       COUNT(t))
-                  FROM Task t
-                 WHERE t.deleted = false
-                 GROUP BY t.status
-            """)
-    List<TaskStatusCountDto> countTeamStatus();
-
-
-    /*특정 연도에 월 단위로 생성된 태스크 개수 및 완료 개수
-    월간 그래프 용*/
-    @Query(
-            """
-                    SELECT new com.example.taskflow.dashboard.dto.MonthlyTaskTrendDto(
-                            function('date', t.createdAt),
-                            COUNT(t),
-                            SUM(CASE WHEN t.status = 'DONE' THEN 1L ELSE 0L END)
-                            )
-                            FROM Task t
-                            WHERE YEAR(t.createdAt) = :year
-                            AND t.deleted = false
-                            GROUP BY function('date', t.createdAt)
-                            ORDER BY function('date', t.createdAt)
-                    
-                    """)
-    List<MonthlyTaskTrendDto> fetchFixedMonthlyTrend(@Param("year") int year);
 }
