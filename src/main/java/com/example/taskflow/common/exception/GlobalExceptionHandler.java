@@ -63,5 +63,4 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ApiResponse<Void>> handlerLoginFailedException(LoginFailedException ex) {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<>(false, ex.getMessage(), null));
 	}
-
 }

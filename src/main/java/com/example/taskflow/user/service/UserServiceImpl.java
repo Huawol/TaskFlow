@@ -1,4 +1,5 @@
 package com.example.taskflow.user.service;
+import com.example.taskflow.common.exception.GlobalExceptionHandler;
 import com.example.taskflow.security.PasswordEncoder;
 import com.example.taskflow.common.exception.LoginFailedException;
 import com.example.taskflow.security.enums.UserRole;
@@ -46,6 +47,7 @@ public class UserServiceImpl implements UserService {
 	public SignupResponseDto signUp(SignupRequestDto signupRequestDto) {
 		if (userRepository.existsByEmail(signupRequestDto.getEmail())) {
 			throw new DuplicateRequestException("이미 존재하는 이메일입니다.");
+
 		}
 		User user = new User(
 			signupRequestDto.getEmail(),
@@ -61,7 +63,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public LoginResponseDto login(LoginRequestDto loginRequestDto) {
-		User user = userRepository.findByUserNameAndDeletedFalse(loginRequestDto.getUserName())
+		User user = userRepository.findByUserNameAndDeletedFalse(loginRequestDto.getUsername())
 			.orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 아이디입니다."));
 
 		if (!passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword())) {

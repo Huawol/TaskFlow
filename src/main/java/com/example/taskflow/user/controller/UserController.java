@@ -23,21 +23,21 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/users")
+@RequestMapping("/auth")
 public class UserController {
 
     private final UserService userService;
     private final UserServiceImpl userServiceImpl;
     private final JwtUtil jwtUtil;
 
-    @PostMapping("/signup")
+    @PostMapping("/signup") // 회원가입
     public ResponseEntity<ApiResponse<SignupResponseDto>> signUp(@Valid @RequestBody SignupRequestDto signupRequestDto) {
         SignupResponseDto signupResponseDto = userServiceImpl.signUp(signupRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(new ApiResponse<>(true, "회원 가입되었습니다.", signupResponseDto));
     }
 
-    @GetMapping("/login")
+    @GetMapping("/signin") // 로그인
     public ResponseEntity<ApiResponse<TokenResponseDto>> Login(
         @Valid @RequestBody LoginRequestDto loginRequestDto) {
         LoginResponseDto loginResponseDto = userServiceImpl.login(loginRequestDto);
@@ -54,7 +54,7 @@ public class UserController {
     //회원탈퇴 API
     //- 클라이언트가 전달한 비밀번호를 검증 후 soft delete 처리
     //- 인증된 사용자 본인만 가능
-    @DeleteMapping("/me")
+    @DeleteMapping("/withdraw")
     public ResponseEntity<Void> deleteUser(
         @AuthenticationPrincipal UserDetails userDetails,
         @RequestBody UserDeleteRequestDto requestDto) {
