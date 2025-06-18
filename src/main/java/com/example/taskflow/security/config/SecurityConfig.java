@@ -67,10 +67,11 @@ public class SecurityConfig {
 
                         // 대시보드 인가
                         .requestMatchers(HttpMethod.GET, "/api/dashboards").hasRole(UserRole.USER.name())
-                        .requestMatchers(HttpMethod.GET, "/api/dashboards/*").hasRole(UserRole.USER.name())
+                        .requestMatchers(HttpMethod.GET, "/api/dashboards/**").hasRole(UserRole.USER.name())
 
                         // 로그 조회 인가
                         .requestMatchers(HttpMethod.GET, "/api/logs").hasRole(UserRole.USER.name())
+                        .requestMatchers("/error").permitAll()
 
                         .anyRequest().denyAll()
                 )

@@ -1,9 +1,8 @@
 package com.example.taskflow.common;
 
 import java.time.LocalDateTime;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
-
+import jakarta.annotation.Nullable;
 import lombok.Getter;
 
 @Getter
@@ -14,6 +13,10 @@ public class ApiResponse<T> {
 	private String message;
 	private T data;
 	private LocalDateTime timestamp;
+
+	public static <T> ApiResponse<T> createSuccess(String message, @Nullable T data){
+		return new ApiResponse<>(true, message, data);
+	}
 
 	public ApiResponse(Boolean success, String message, T responseDto) {
 		this.success = success;
