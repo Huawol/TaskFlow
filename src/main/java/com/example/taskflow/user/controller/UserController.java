@@ -1,6 +1,8 @@
 package com.example.taskflow.user.controller;
 
 import com.example.taskflow.common.ApiResponse;
+import com.example.taskflow.log.aop.ActivityLogging;
+import com.example.taskflow.log.entity.ActivityType;
 import com.example.taskflow.security.config.JwtUtil;
 import com.example.taskflow.security.enums.UserRole;
 import com.example.taskflow.user.dto.LoginRequestDto;

@@ -1,4 +1,6 @@
 package com.example.taskflow.user.service;
+import com.example.taskflow.log.aop.ActivityLogging;
+import com.example.taskflow.log.entity.ActivityType;
 import com.example.taskflow.security.PasswordEncoder;
 import com.example.taskflow.common.exception.LoginFailedException;
 import com.example.taskflow.security.enums.UserRole;
@@ -60,6 +62,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@ActivityLogging(value = ActivityType.USER_LOGGED_IN, targetParam = "loginRequestDto")
 	public LoginResponseDto login(LoginRequestDto loginRequestDto) {
 		User user = userRepository.findByUserNameAndDeletedFalse(loginRequestDto.getUserName())
 			.orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 아이디입니다."));

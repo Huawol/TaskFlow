@@ -77,13 +77,11 @@ public class ActivityLoggingAspect {
 
         Long targetId = null;
         for (int i = 0; i < paramNames.length; i++) {
-            if (paramNames[i].equals(targetParamName)) {
-                Object arg = args[i];
-                if (arg instanceof Long) {
+            if (paramNames[i].equals(targetParamName)) { //동일한 이름 찾기 ex) "createdById"
+                Object arg = args[i]; //값 꺼내기
+                if (arg instanceof Long) { //Long 타입 확인
                     targetId = (Long) arg;
-                } else if (arg instanceof Integer) {
-                    targetId = ((Integer) arg).longValue();
-                } else if (arg != null) {
+                } else if (arg != null) { //Long 아니고, null도 아닌 그 외 정보값을 가졌을 때
                     try {
                         targetId = Long.valueOf(arg.toString());
                     } catch (NumberFormatException e) {
