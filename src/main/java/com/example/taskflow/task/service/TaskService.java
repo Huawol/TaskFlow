@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.taskflow.comment.entity.Comment;
 import com.example.taskflow.comment.repository.CommentRepository;
 import com.example.taskflow.common.exception.TaskNotFoundException;
-import com.example.taskflow.common.exception.TodoNotFoundException;
 import com.example.taskflow.common.exception.UserMismatchException;
 import com.example.taskflow.common.exception.UserNotFoundException;
 import com.example.taskflow.security.dto.AuthUserDto;
