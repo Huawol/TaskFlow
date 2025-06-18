@@ -20,13 +20,16 @@ public class DashboardController {
 
     private final DashboardService dashboardService;
 
-    @GetMapping
+    @GetMapping("/statistics")
     public ApiResponse<DashboardStatisticsDto> statistics(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
         if (from.isAfter(to)) {
             throw new IllegalArgumentException("'from' must be before 'to'");
         }
-        return
+        return ApiResponse.createSuccess( "통계 조회 성공",dashboardService.getStatistics(from, to));
     }
+
+    @GetMapping
+    public ApiResponse<DashboardStatisticsDto>
 }
