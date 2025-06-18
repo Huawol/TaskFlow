@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.example.taskflow.common.ApiResponse;
+import com.example.taskflow.security.exception.exceptions.BlacklistedTokenException;
 import com.example.taskflow.task.exception.PriorityTransitionException;
 import com.example.taskflow.task.exception.StatusTransitionException;
 import com.sun.jdi.request.DuplicateRequestException;
@@ -81,4 +82,9 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<>(false, ex.getMessage(), null));
 	}
 
+	@ExceptionHandler(BlacklistedTokenException.class)
+	public ResponseEntity<ApiResponse<Void>> handlerBlacklistedTokenException(BlacklistedTokenException ex) {
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+			.body(new ApiResponse<>(false, ex.getMessage(), null));
+	}
 }
