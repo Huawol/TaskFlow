@@ -2,7 +2,6 @@ package com.example.taskflow.common.exception;
 
 import java.util.stream.Collectors;
 
-import com.sun.jdi.request.DuplicateRequestException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,10 +38,26 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>(false, ex.getMessage(), null));
 	}
 
-	@ExceptionHandler(TodoNotFoundException.class)
-	public ResponseEntity<ApiResponse<Void>> handlerTodoNotFoundException(TodoNotFoundException ex) {
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>(false, ex.getMessage(), null));
+	@ExceptionHandler(StatusTransitionException.class)
+	public ResponseEntity<ApiResponse<Void>> handlerStatusTransitionException(StatusTransitionException ex) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<>(false, ex.getMessage(), null));
 	}
+
+	@ExceptionHandler(PriorityTransitionException.class)
+	public ResponseEntity<ApiResponse<Void>> handlerPriorityTransitionException(PriorityTransitionException ex) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<>(false, ex.getMessage(), null));
+	}
+
+	@ExceptionHandler(TaskNotFoundException.class)
+	public ResponseEntity<ApiResponse<Void>> handlerTaskNotFoundException(TaskNotFoundException ex) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<>(false, ex.getMessage(), null));
+	}
+
+	@ExceptionHandler(UserMismatchException.class)
+	public ResponseEntity<ApiResponse<Void>> handlerUserMismatchException(UserMismatchException ex) {
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse<>(false, ex.getMessage(), null));
+	}
+
 
 	@ExceptionHandler(DuplicateRequestException.class)
 	public ResponseEntity<ApiResponse<Void>> handlerDuplicate(DuplicateRequestException ex) {
@@ -63,4 +78,5 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ApiResponse<Void>> handlerLoginFailedException(LoginFailedException ex) {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<>(false, ex.getMessage(), null));
 	}
+  
 }

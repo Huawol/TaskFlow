@@ -11,7 +11,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 
-
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 
@@ -42,6 +42,17 @@ public class Comment extends BaseEntity{
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "task_id")
     private Task task;
+
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
 
     public void updateComment(String content) {
         Optional.ofNullable(content).ifPresent(n -> this.content = n);

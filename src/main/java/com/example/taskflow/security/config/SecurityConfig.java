@@ -51,7 +51,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/tasks").hasRole(UserRole.USER.name()) // 생성
                         .requestMatchers(HttpMethod.GET, "/api/tasks/*").hasRole(UserRole.USER.name()) // 단건 조회
                         .requestMatchers(HttpMethod.GET, "/api/tasks").hasRole(UserRole.USER.name()) // 전체 조회
-                        .requestMatchers(HttpMethod.PATCH, "/api/tasks/*").hasRole(UserRole.USER.name()) // 수정
+                        .requestMatchers(HttpMethod.PATCH, "/api/tasks/*").hasRole(UserRole.USER.name()) // 상태값수정
+                        .requestMatchers(HttpMethod.PUT, "/api/tasks/*").hasRole(UserRole.USER.name()) // 전체수정
                         .requestMatchers(HttpMethod.DELETE, "/api/tasks/*").hasRole(UserRole.USER.name()) // 삭제
 
                         // 댓글 인가
