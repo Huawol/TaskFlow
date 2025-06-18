@@ -1,6 +1,8 @@
 package com.example.taskflow.comment.service;
 
 import com.example.taskflow.comment.repository.CommentRepository;
+import com.example.taskflow.log.aop.ActivityLogging;
+import com.example.taskflow.log.entity.ActivityType;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +30,7 @@ public class CommentService {
         this.userRepository = userRepository;
         this.taskRepository = taskRepository;
     }
-
+    @ActivityLogging(value = ActivityType.COMMENT_CREATED, targetParam = "userId")
     public Long saveComment(Long userId, Long taskId, String content) {
         Task task = taskRepository.findById(taskId).orElseThrow(
                 () -> new IllegalArgumentException("해당 Task가 존재하지 않습니다. id: " + taskId));
@@ -41,7 +43,7 @@ public class CommentService {
 
         return comment.getId();
     }
-
+    @ActivityLogging(value = ActivityType.COMMENT_UPDATED, targetParam = "userId")
     public void updateCommentById(Long userId, Long commentId, UpdateCommentRequestDto requestDto) {
         Comment findComment = commentRepository.findByIdOrElseThrow(commentId);
         if (!findComment.getUser().getId().equals(userId)) {
@@ -49,7 +51,7 @@ public class CommentService {
         }
         findComment.updateComment(requestDto.getContent());
     }
-
+    @ActivityLogging(value = ActivityType.COMMENT_DELETED, targetParam = "userId")
     public void deleteCommentById(Long userId, Long commentId) { // hard delete
         Comment findComment = commentRepository.findByIdOrElseThrow(commentId);
 

@@ -91,7 +91,7 @@ public class TaskService {
 		return TaskWithCommentResponseDto.from(foundTask, commentSimpleResponses);
 	}
 
-	@ActivityLogging(value = ActivityType.TASK_UPDATED, targetParam = "createdById")
+	@ActivityLogging(value = ActivityType.TASK_UPDATED, targetParam = "id")
 	public TaskResponseDto changeTask(Long id, TaskUpdateRequestDto requestDto, AuthUserDto authUserDto) {
 		Long authId = authUserDto.getId();
 		Task foundTask = getTaskOrThrow(taskRepository.findByIdAndDeletedFalse(id));

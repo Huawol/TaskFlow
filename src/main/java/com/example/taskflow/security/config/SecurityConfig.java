@@ -68,7 +68,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/dashboards/*").hasRole(UserRole.USER.name())
 
                         // 로그 조회 인가
-                        .requestMatchers(HttpMethod.GET, "/api/logs").hasRole(UserRole.USER.name())
+                        .requestMatchers(HttpMethod.GET, "/activities").hasRole(UserRole.USER.name())
 
                         .anyRequest().denyAll()
                 )

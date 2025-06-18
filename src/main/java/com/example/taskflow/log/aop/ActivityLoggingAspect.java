@@ -23,6 +23,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -42,6 +43,8 @@ public class ActivityLoggingAspect {
     //Advice 실제 로직
     @Around("activityLoggingPointcut()")
     public Object logActivity(ProceedingJoinPoint joinPoint) throws Throwable {
+
+
 
         //요청정보 추출(ip,url 등 기록용)
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
@@ -104,6 +107,9 @@ public class ActivityLoggingAspect {
         String methodType = request.getMethod();
         String uri = request.getRequestURI();
         String ipAddress = request.getRemoteAddr();
+
+        log.info("AOP 진입: activityType={}, method={}, args={}", activityType, method.getName(), Arrays.toString(args));
+
         if (activityType == ActivityType.USER_LOGGED_IN) {
             Object result = joinPoint.proceed();
             // proceed() 이후에 User 정보 또는 LoginResponseDto에서 userId 꺼내기
@@ -137,6 +143,8 @@ public class ActivityLoggingAspect {
             userId = user.getId();
         }
 
+        log.info("TASK_* 로그: userId={}, activityType={}, targetId={}", userId, activityType, targetId);
+
         ActivityLog log = ActivityLog.builder()
                 .userId(userId)
                 .activityType(activityType)
@@ -145,8 +153,9 @@ public class ActivityLoggingAspect {
                 .ipAddress(ipAddress)
                 .httpMethod(methodType)
                 .url(uri)
-                .description(activityType.name()+"활동 로그 AOP")
+                .description(activityType.name()+"활동 로그")
                 .build();
+
 
         activityRepository.save(log);
         return result;
