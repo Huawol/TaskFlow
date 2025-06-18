@@ -1,12 +1,15 @@
-package com.example.taskflow.Dashborad.service;
+package com.example.taskflow.dashboard.service;
 
 
-import com.example.taskflow.Dashborad.dto.*;
-import com.example.taskflow.Dashborad.repository.TaskStatisticsRepository;
+import com.example.taskflow.dashboard.dto.*;
+import com.example.taskflow.dashboard.repository.ActivityLogRepository;
+import com.example.taskflow.dashboard.repository.TaskStatisticsRepository;
 import com.example.taskflow.task.entity.Status;
 import com.example.taskflow.task.entity.Task;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cglib.core.Local;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,14 +21,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.example.taskflow.task.entity.Status.TODO;
-
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class DashboardService {
 
     private final TaskStatisticsRepository taskStatisticsRepository;
+    private final ActivityLogRepository activityLogRepository;
 
     public DashboardStatisticsDto getStatistics(LocalDate from, LocalDate to) {
         LocalDateTime start = from.atStartOfDay();
@@ -83,19 +85,19 @@ public class DashboardService {
     }
 
 
-/*    public List<TaskSimpleResponseDto> getMyTasksByDate(Long userId, LocalDate date) {
-        List<Task> tasks = taskStatisticsRepository.findAllByUserIdAndDate(
-                userId,
-                date,
-                List.of(Status.TODO, Status.IN_PROGRESS));
-        return tasks.stream()
-                .map(TaskSimpleResponseDto::from)//영재님 Task에서
-                .collect(Collectors.toList());
+//    public List<TaskSimpleResponseDto> getMyTasksByDate(Long userId, LocalDate date) {
+//        List<Task> tasks = taskStatisticsRepository.findAllByUserIdAndDate(
+//                userId,
+//                date,
+//                List.of(Status.TODO, Status.IN_PROGRESS));
+//        return tasks.stream()
+//                .map(TaskSimpleResponseDto::from)
+//                .collect(Collectors.toList());
+//
+//    }
 
-    }*/
 
-
-/*    //최근 1주(월~일) 트렌드 반환
+    //최근 1주(월~일) 트렌드 반환
     public List<DailyTaskTrendDto> getWeeklyTrend(LocalDate today) {
 
         //이번주 월요일 00:00
@@ -107,7 +109,7 @@ public class DashboardService {
 
         return taskStatisticsRepository.fetchDailyTrend(start, end);
 
-    }*/
+    }
 
     public TaskStatusRatioDto getStatusRatio() {
 
@@ -179,5 +181,16 @@ public class DashboardService {
 
         return fullYear;
 
+    }
+
+    //로그 기록 가져오기 // 로그쪽 되는거 보고 수정
+    public List<ActivityLogDto> getAcitivityFeed() {
+        LocalDateTime to = LocalDateTime.now(); // 7일정도
+        LocalDateTime from = to.minusDays(7);
+
+        Pageable topFive = PageRequest.of(0, 5, // 0페이지, 5건
+                Sort.by(Sort.Direction.DESC, "createdAt")); // 최신순
+
+        return activityLogRepository.fetchFeed(from, to, topFive);
     }
 }

@@ -2,6 +2,7 @@ package com.example.taskflow.log;
 
 import com.example.taskflow.common.BaseEntity;
 import com.example.taskflow.log.dto.request.ActivityLogCreateRequestDto;
+import com.example.taskflow.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,6 +39,12 @@ public class ActivityLog extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private ActivityType activityType;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userId")
+    private User user;
+
+    private String message;
 
     //논리적  삭제
     //private Boolean deleted = false;

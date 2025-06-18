@@ -1,4 +1,4 @@
-package com.example.taskflow.Dashborad.dto;
+package com.example.taskflow.dashboard.dto;
 
 
 import lombok.AllArgsConstructor;
