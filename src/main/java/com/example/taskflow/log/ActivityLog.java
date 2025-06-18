@@ -40,7 +40,7 @@ public class ActivityLog extends BaseEntity {
     private ActivityType activityType;
 
     //논리적  삭제
-    private Boolean deleted = false;
+    //private Boolean deleted = false;
 
     public static ActivityLog from(ActivityLogCreateRequestDto requestDto){
         return ActivityLog.builder()

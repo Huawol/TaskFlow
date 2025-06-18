@@ -1,0 +1,55 @@
+[33m1788b05[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfeature/hj-user[m[33m, [m[1;31morigin/dev[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mdev[m[33m)[m feat: 커스텀예외 핸들러 추가
+[33m796f44a[m fix: user 도메인과 login 도메인의 병합내용중 충돌사항 수정
+[33m1dd56ce[m Merge pull request #13 from Huawol/feat/태현-인증인가
+[33m7f3e42c[m[33m ([m[1;31morigin/feat/태현-인증인가[m[33m)[m bug : 이름중복으로 인항 충돌 해결
+[33m3c61eb5[m Merge pull request #12 from Huawol/feat/태현-인증인가
+[33m83a4d48[m feat: signup/login
+[33m48f103d[m Merge pull request #11 from Huawol/feature/hj-user
+[33me67bbec[m refactor: User 엔티티 PK 필드명 userId -> id 변경 및 전체 참조 수정
+[33m560e765[m Merge pull request #10 from Huawol/feature/hj-user
+[33m8857b94[m Merge branch 'dev' into feature/hj-user
+[33md849c38[m Merge pull request #9 from Huawol/feature/hs-comment
+[33m2227718[m Merge branch 'dev' into feature/hs-comment
+[33m4d2edc0[m feat: 유저 회원가입 및 탈퇴 기능 BaseEntity기반으로 수정
+[33mbf78beb[m Merge pull request #6 from Huawol/feature/dh-log
+[33m66735b6[m feat: 엔티티 머지용/ enum타입 push
+[33m75a4bd4[m feat: 유저 회원가입 및 탈퇴 기능 dev 기준 구현
+[33m49949e2[m feat: 엔티티 머지용/ enum타입 push
+[33m62a5539[m feat: 엔티티 머지용
+[33m7742246[m Merge pull request #5 from Huawol/feature/dh-log
+[33mfd63110[m Merge branch 'dev' into feature/dh-log
+[33m2b57280[m Merge pull request #4 from Huawol/feature/yj-task
+[33ma67fcd2[m Merge branch 'dev' into feature/yj-task
+[33ma35a859[m Remove : gitkeep 삭제
+[33m2eb7f9a[m feat: 상태변경 메서드 추가
+[33m6cdabe1[m Merge pull request #3 from Huawol/feat/태현-인증인가
+[33m3fb991c[m feat: 엔티티 머지용
+[33me4b64c9[m 엔티티 작성
+[33mecf3861[m feat: JWT/Spring Security
+[33mb479cbc[m feat: 엔티티생성
+[33m3109923[m feat: 엔티티생성
+[33m22e7928[m feat: nullable 설정 추가
+[33mc8e5209[m feat: JWT/Spring Security
+[33mf193ab8[m refactor: 도메인 변경으로 인한 수정
+[33m40476ad[m refactor: 도메인 변경으로 인한 수정
+[33m60371f2[m refactor: 도메인 변경으로 인한 수정
+[33m41203d6[m feat: 테스트 용 임시 클래스 추가
+[33m899a0fa[m refactor: 테스트를 위한 제약조건 삭제
+[33m997093c[m refactor: 도메인 변경으로 인한 수정
+[33mf1c2090[m chore: .gitKeep 파일 삭제
+[33m7d8f03c[m refactor: 도메인 네이밍 변경
+[33mfe1bd34[m chore: 시큐리티 의존성 제거
+[33me979b9f[m feat: JWT/Spring Security
+[33mbaacdf4[m feat: 커스텀예외, 핸들러 추가
+[33m14e6f55[m feat: 테스트용 기능 추가
+[33m0c0e078[m refactor: 공통응답 로직 수정
+[33m926b351[m chore: 디렉토리 유지를 위한 .gitkeep 파일 추가
+[33ma950230[m feat: UserNotFoundException 핸들러 추가
+[33mb1cb95c[m feat: 커스텀예외 추가
+[33md6c1482[m feat: Todo 도메인 테스트용 도메인 추가
+[33ma35efbe[m feat: Todo 도메인 기본구조 세팅
+[33m78c9bf0[m feat: Todo 엔티티에 사용할 enum 추가
+[33m5d7ce37[m feat: BaseEntity 추가
+[33m6391bed[m chore: .gitkeep 파일 삭제
+[33m46d7c0b[m chore: 디렉토리 유지를 위한 .gitkeep 파일 추가
+[33m6083cd6[m chore(init): 프로젝트 초기 설정 및 초기 커밋
