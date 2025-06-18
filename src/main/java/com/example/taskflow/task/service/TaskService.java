@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.example.taskflow.log.aop.ActivityLogging;
+import com.example.taskflow.log.dto.request.ActivityLogCreateRequestDto;
 import com.example.taskflow.log.entity.ActivityType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -74,6 +75,8 @@ public class TaskService {
 
 		//변경을 원하는 상태값 enum 값으로 변경 후 검증 메서드 호출
 		Status requestStatus = Status.from(requestDto.getStatus());
+		//이전상태 저장
+		Status beforeStatus = foundTask.getStatus();
 
 		if(!inValidTransition(foundTask.getStatus(), requestStatus)) {
 			throw new StatusTransitionException("상태값은 TODO -> IN_PROGRESS -> DONE 순으로만 변경 가능합니다.");

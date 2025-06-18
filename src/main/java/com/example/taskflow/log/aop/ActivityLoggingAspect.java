@@ -1,11 +1,14 @@
 package com.example.taskflow.log.aop;
 
-
-import com.example.taskflow.common.exception.UserNotFoundException;
+import com.example.taskflow.log.dto.request.ActivityLogCreateRequestDto;
 import com.example.taskflow.log.entity.ActivityLog;
 import com.example.taskflow.log.entity.ActivityType;
 import com.example.taskflow.log.repository.ActivityRepository;
+import com.example.taskflow.security.dto.AuthLogUserDto;
 import com.example.taskflow.security.dto.AuthUserDto;
+import com.example.taskflow.task.dto.request.TaskStatusRequestDto;
+import com.example.taskflow.task.entity.Task;
+import com.example.taskflow.task.repository.TaskRepository;
 import com.example.taskflow.user.dto.LoginResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +23,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -32,6 +35,7 @@ import java.util.Arrays;
 public class ActivityLoggingAspect {
 
     private final ActivityRepository activityRepository;
+    private final TaskRepository taskRepository;
 
     /**
      * @ActivityLogging
@@ -43,8 +47,6 @@ public class ActivityLoggingAspect {
     //Advice 실제 로직
     @Around("activityLoggingPointcut()")
     public Object logActivity(ProceedingJoinPoint joinPoint) throws Throwable {
-
-
 
         //요청정보 추출(ip,url 등 기록용)
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
@@ -60,56 +62,47 @@ public class ActivityLoggingAspect {
          //파라미터 값 가져오기 ex)"createdById"
          String targetParamName = annotation.targetParam();
 
+        //targetId 추출 분리
+        Long targetId = extractTargetId(signature, joinPoint.getArgs(), targetParamName);
 
-        //  targetId 파라미터 추출
-        //파라미터 이름 배열
-        String[] paramNames = signature.getParameterNames();
-        //파라미터 값 배열 paramNames -> 1:1 매칭
-        Object[] args = joinPoint.getArgs();
+        //TASK_STATUS_CHANGED는 before/after 직접 조회
+        ActivityLogCreateRequestDto requestDto = null;
+        //requestDto 추출 분리
+        if (activityType == ActivityType.TASK_STATUS_CHANGED) {
+            String before = "알 수 없음";
+            String after = "알 수 없음";
 
-        //로그인 및 타 케이스를 위해 Object
-        Object targetValue = null;
-        for (int i = 0; i < paramNames.length; i++) {
-            if (paramNames[i].equals(targetParamName)) { //동일한 이름 찾기 ex) "createdById"
-                Object arg = args[i];//값 꺼내기
-
-                if (arg instanceof Long || arg instanceof String) { //Long 타입 확인
-                    targetValue = arg;
-                } else if (arg != null) { //Long 아니고, null도 아닌 그 외 정보값을 가졌을 때
-                    try {
-                        //상황에 따라 "userName", "email", "id" 등으로 필드명 바꿔서 시도
-                        java.lang.reflect.Field field = arg.getClass().getDeclaredField("userName");
-                        field.setAccessible(true);
-                        Object value = field.get(arg);
-                        if (value != null)  targetValue = value;
-                    } catch (NumberFormatException e) {
-                        log.warn("targetId 파라미터 변환 실패: {}", arg, e);
+                // 파라미터에서 after 값 추출
+                for (Object arg : joinPoint.getArgs()) {
+                    if (arg instanceof TaskStatusRequestDto dto) {
+                        after = dto.getStatus();
                     }
                 }
-                break;
+                // 실행 전에 DB에서 before 값 조회
+                if (targetId != null && targetId > 0) {
+                    Optional<Task> taskOpt = taskRepository.findByIdAndDeletedFalse(targetId);
+                    if (taskOpt.isPresent()) {
+                        before = taskOpt.get().getStatus().name();
+                    }
+                }
+                requestDto = new ActivityLogCreateRequestDto(
+                        activityType,
+                        targetId,
+                        before,
+                        after
+                );
+            }else {
+                // 2. 그 외의 경우 DTO 파라미터가 있는지 확인(확장성을 위한 추출)
+                requestDto = extractRequestDto(joinPoint.getArgs());
             }
-        }
-
-        Long targetId = null;
-        if (targetValue instanceof Long) {
-            targetId = (Long) targetValue;
-        } else if (targetValue instanceof String) {
-            try {
-               targetId = Long.valueOf((String) targetValue);
-            } catch (NumberFormatException e) {}
-
-        }
-        if (targetId == null){
-            targetId = 0L;
-        }
-        // 2. 로그인일 때만 특별 처리
 
         String methodType = request.getMethod();
         String uri = request.getRequestURI();
         String ipAddress = request.getRemoteAddr();
 
-        log.info("AOP 진입: activityType={}, method={}, args={}", activityType, method.getName(), Arrays.toString(args));
-
+        /**
+         * 로그인때만 사용되는 로직
+         */
         if (activityType == ActivityType.USER_LOGGED_IN) {
             Object result = joinPoint.proceed();
             // proceed() 이후에 User 정보 또는 LoginResponseDto에서 userId 꺼내기
@@ -117,7 +110,11 @@ public class ActivityLoggingAspect {
             if (result instanceof LoginResponseDto responseDto) {
                 userId = responseDto.getId();
             }
-            if (userId == null) userId = 0L; // 안전장치
+            if (userId == null) {
+                log.warn("[AOP] 로그인 후 userId가 null입니다. 로그 미저장");
+                return result;
+            }
+            String description = activityType.description(null);
 
             ActivityLog log = ActivityLog.builder()
                     .userId(userId)
@@ -127,23 +124,39 @@ public class ActivityLoggingAspect {
                     .ipAddress(ipAddress)
                     .httpMethod(methodType)
                     .url(uri)
-                    .description(activityType.name() + " 로그인 활동 로그 AOP")
+                    .description(description)
                     .build();
 
             activityRepository.save(log);
             return result;
         }
 
+        //나머지 케이스 실행
         Object result = joinPoint.proceed();
 
         // 인증 정보 추출 (User) ->Spring Security에서 현재 로그인한 사용자의 인증정보 추출
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Long userId = null;
-        if (authentication != null && authentication.getPrincipal() instanceof AuthUserDto user) {
-            userId = user.getId();
+
+        if (authentication != null){
+            Object principal = authentication.getPrincipal();
+
+            if (principal instanceof AuthLogUserDto user){
+                userId = user.getId();
+            } else if (principal instanceof  AuthUserDto user) {
+                userId = user.getId();
+            }
         }
 
-        log.info("TASK_* 로그: userId={}, activityType={}, targetId={}", userId, activityType, targetId);
+        if (userId == null){
+            log.warn("[AOP] userId -> null, 로그 저장 x : principal = {}", authentication != null ? authentication.getPrincipal() : null);
+            return result;
+        }
+
+
+
+        //description 동적 생성
+        String description = activityType.description(requestDto);
 
         ActivityLog log = ActivityLog.builder()
                 .userId(userId)
@@ -153,11 +166,52 @@ public class ActivityLoggingAspect {
                 .ipAddress(ipAddress)
                 .httpMethod(methodType)
                 .url(uri)
-                .description(activityType.name()+"활동 로그")
+                .description(description)
                 .build();
-
 
         activityRepository.save(log);
         return result;
+
+
+    }
+    //분리 targetId 추출 메서드
+    private Long extractTargetId(MethodSignature signature, Object[] args, String targetParamName) {
+        String[] paramNames = signature.getParameterNames();
+        for (int i = 0; i < paramNames.length; i++) {
+            if (paramNames[i].equals(targetParamName)) {
+                Object arg = args[i];
+                if (arg instanceof Long) return (Long) arg;
+                if (arg instanceof String s) {
+                    try { return Long.valueOf(s); } catch (NumberFormatException ignore) {}
+                }
+                if (arg != null) {
+                    String[] tryFields = {"id", "targetId", "userName"};
+                    for (String fieldName : tryFields) {
+                        try {
+                            java.lang.reflect.Field field = arg.getClass().getDeclaredField(fieldName);
+                            field.setAccessible(true);
+                            Object value = field.get(arg);
+                            if (value instanceof Long) return (Long) value;
+                            if (value instanceof String s2) {
+                                try { return Long.valueOf(s2); } catch (NumberFormatException ignore) {}
+                            }
+                        } catch (Exception ignore) {}
+                    }
+                }
+            }
+        }
+        log.warn("[AOP] targetId를 찾지 못했습니다. targetParamName={}, paramNames={}", targetParamName, Arrays.toString(paramNames));
+
+        return 0L;
+    }
+
+    // [추가/분리] requestDto 추출 메서드
+    private ActivityLogCreateRequestDto extractRequestDto(Object[] args) {
+        for (Object arg : args) {
+            if (arg instanceof ActivityLogCreateRequestDto dto) {
+                return dto;
+            }
+        }
+        return null;
     }
 }
