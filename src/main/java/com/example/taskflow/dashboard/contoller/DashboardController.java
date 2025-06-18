@@ -1,7 +1,7 @@
-package com.example.taskflow.Dashborad.contoller;
+package com.example.taskflow.dashboard.contoller;
 
-import com.example.taskflow.Dashborad.dto.DashboardStatisticsDto;
-import com.example.taskflow.Dashborad.service.DashboardService;
+import com.example.taskflow.dashboard.dto.DashboardStatisticsDto;
+import com.example.taskflow.dashboard.service.DashboardService;
 import com.example.taskflow.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,6 +29,5 @@ public class DashboardController {
         return ApiResponse.createSuccess( "통계 조회 성공",dashboardService.getStatistics(from, to));
     }
 
-    @GetMapping
-    public ApiResponse<DashboardStatisticsDto>
+
 }

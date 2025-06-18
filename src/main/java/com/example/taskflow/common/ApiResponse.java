@@ -15,7 +15,7 @@ public class ApiResponse<T> {
 	private LocalDateTime timestamp;
 
 	public static <T> ApiResponse<T> createSuccess(String message, @Nullable T data){
-		return new ApiResponse<>(true, message, data, LocalDateTime.now());
+		return new ApiResponse<>(true, message, data);
 	}
 
 	public ApiResponse(Boolean success, String message, T responseDto) {
