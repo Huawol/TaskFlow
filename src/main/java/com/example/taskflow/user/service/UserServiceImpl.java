@@ -1,5 +1,6 @@
 package com.example.taskflow.user.service;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,7 @@ import com.example.taskflow.user.dto.LoginResponseDto;
 import com.example.taskflow.user.dto.SignupRequestDto;
 import com.example.taskflow.user.dto.SignupResponseDto;
 import com.example.taskflow.user.entity.User;
+import com.example.taskflow.user.event.UserDeletedEvent;
 import com.example.taskflow.user.repository.UserRepository;
 import com.sun.jdi.request.DuplicateRequestException;
 
@@ -33,7 +35,7 @@ public class UserServiceImpl implements UserService {
 	private final PasswordEncoder passwordEncoder;
 	private final TokenBlacklistRepository tokenBlacklistRepository;
 	private final JwtUtil jwtUtil;
-
+	private final ApplicationEventPublisher eventPublisher;
 
 	//회원탈퇴 처리
 	//- DB에서 사용자 정보 조회
@@ -55,6 +57,9 @@ public class UserServiceImpl implements UserService {
 		tokenBlacklistRepository.save(tokenBlacklist);
 
 		user.softDelete();
+
+		//유저 삭제 후 이벤트 발행
+		eventPublisher.publishEvent(new UserDeletedEvent(user.getId()));
 	}
 
 
