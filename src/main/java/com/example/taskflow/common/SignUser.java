@@ -1,6 +1,5 @@
-package com.example.taskflow.user.entity;
+package com.example.taskflow.common;
 
-import com.example.taskflow.common.BaseEntity;  //BaseEntity 상속을 위해 import 추가
 import com.example.taskflow.security.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -8,16 +7,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
-@NoArgsConstructor
-@Entity
 @Setter
+@Entity
+@NoArgsConstructor
 @Table(name = "users")
-public class User extends BaseEntity {  //BaseEntity 상속 추가
+public class SignUser extends BaseEntity {
 
     @Id
     @GeneratedValue
     @Column(name = "user_id")
-    private Long id;
+    private Long userId;
 
     private String email;
 
@@ -30,12 +29,10 @@ public class User extends BaseEntity {  //BaseEntity 상속 추가
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
-    public User( String email, String password, String userName, String name) {
+    public SignUser(String email, String password, String userName, String name) {
         this.email = email;
         this.password = password;
         this.userName = userName;
         this.name = name;
     }
-
-
 }

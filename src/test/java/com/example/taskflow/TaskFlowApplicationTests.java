@@ -1,9 +1,11 @@
 package com.example.taskflow;
 
+import com.example.taskflow.login.dto.LoginRequestDto;
 import com.example.taskflow.security.config.JwtProperties;
 import com.example.taskflow.security.config.JwtUtil;
 import com.example.taskflow.security.dto.AuthUserDto;
 import com.example.taskflow.security.enums.UserRole;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,6 +28,9 @@ class TaskFlowApplicationTests {
 	private MockMvc mockMvc;
 	@Autowired
 	private JwtProperties jwtProperties;
+
+	@Autowired
+	private ObjectMapper objectMapper;
 
 	@Autowired
 	private JwtUtil jwtUtil; // 네가 만든 JWT 생성/파싱 유틸

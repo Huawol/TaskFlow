@@ -9,7 +9,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
 @Getter
-public class TaskCreateRequestDto {
+public class TaskUpdateRequestDto {
 
 	@NotNull(message = "담당자를 입력해주세요")
 	private Long assignedToId;
