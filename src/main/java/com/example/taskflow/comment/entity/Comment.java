@@ -43,17 +43,6 @@ public class Comment extends BaseEntity{
     @JoinColumn(name = "task_id")
     private Task task;
 
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
     public void updateComment(String content) {
         Optional.ofNullable(content).ifPresent(n -> this.content = n);
     }
