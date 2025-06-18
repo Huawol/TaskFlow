@@ -4,40 +4,30 @@ import com.example.taskflow.comment.dto.request.CommentCreateRequestDto;
 import com.example.taskflow.comment.dto.response.FindAllCommentResponseDto;
 import com.example.taskflow.comment.dto.request.UpdateCommentRequestDto;
 import com.example.taskflow.comment.service.CommentService;
-import com.example.taskflow.user.entity.User;
-import jakarta.servlet.http.HttpSession;
+import com.example.taskflow.common.ApiResponse;
+import com.example.taskflow.security.dto.AuthUserDto;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/comments")
+@RequestMapping("/api/tasks/comments")
 @AllArgsConstructor
 public class CommentController {
     private final CommentService commentService;
 
-    private User getLoginUser(HttpSession session) {
-        User loginUser = (User) session.getAttribute("loginUser");
-        if (loginUser == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
-        }
-        return loginUser;
-    }
-
-
     @PostMapping
     public ResponseEntity<Long> saveComment(
             @RequestBody CommentCreateRequestDto requestDto,
-            HttpSession session
+            @AuthenticationPrincipal AuthUserDto authUserDto
     ) {
 
-        User loginUser = getLoginUser(session);
         Long commentId = commentService.saveComment(
-                loginUser.getId(),
+                authUserDto.getId(),
                 requestDto.getTaskId(),
                 requestDto.getContent()
         );
@@ -46,30 +36,30 @@ public class CommentController {
     }
 
     @PatchMapping("/{commentId}")
-    public ResponseEntity<Long> updateCommentById(
+    public ResponseEntity<ApiResponse<Long>> updateCommentById(
             @PathVariable Long commentId,
             @RequestBody UpdateCommentRequestDto requestDto,
-            HttpSession session
+            @AuthenticationPrincipal AuthUserDto authUserDto
     ) {
-        User loginUser = getLoginUser(session);
-
-        commentService.updateCommentById(loginUser.getId(), commentId, requestDto);
-        return new ResponseEntity<>(commentId, HttpStatus.OK);
+        commentService.updateCommentById(authUserDto.getId(), commentId, requestDto);
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(new ApiResponse<>(true,"정상적으로 댓글이 수정되었습니다.", commentId));
     }
 
     @DeleteMapping("/{commentId}")
-    public ResponseEntity<Void> deleteCommentById(
+    public ResponseEntity<ApiResponse<Void>> deleteCommentById(
             @PathVariable Long commentId,
-            HttpSession session
+        @AuthenticationPrincipal AuthUserDto authUserDto
     ) {
-        User loginUser = getLoginUser(session);
-        commentService.deleteCommentById(loginUser.getId(), commentId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        commentService.deleteCommentById(authUserDto.getId(), commentId);
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(new ApiResponse<>(true, "정상적으로 댓글이 삭제되었습니다.", null));
     }
 
     @GetMapping
-    public ResponseEntity<List<FindAllCommentResponseDto>> findAllComment() {
+    public ResponseEntity<ApiResponse<List<FindAllCommentResponseDto>>> findAllComment() {
         List<FindAllCommentResponseDto> findAllCommentResponseDtoList = commentService.findAllComment();
-        return new ResponseEntity<>(findAllCommentResponseDtoList, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(new ApiResponse<>(true,"정상적으로 댓글이 조회되었습니다.",findAllCommentResponseDtoList));
     }
 }

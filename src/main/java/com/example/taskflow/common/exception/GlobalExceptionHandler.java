@@ -2,8 +2,6 @@ package com.example.taskflow.common.exception;
 
 import java.util.stream.Collectors;
 
-import com.example.taskflow.task.exception.PriorityTransitionException;
-import com.example.taskflow.task.exception.StatusTransitionException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +11,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.example.taskflow.common.ApiResponse;
+import com.example.taskflow.security.exception.exceptions.BlacklistedTokenException;
+import com.example.taskflow.task.exception.PriorityTransitionException;
+import com.example.taskflow.task.exception.StatusTransitionException;
 import com.sun.jdi.request.DuplicateRequestException;
 
 @RestControllerAdvice
@@ -80,5 +81,10 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ApiResponse<Void>> handlerLoginFailedException(LoginFailedException ex) {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<>(false, ex.getMessage(), null));
 	}
-  
+
+	@ExceptionHandler(BlacklistedTokenException.class)
+	public ResponseEntity<ApiResponse<Void>> handlerBlacklistedTokenException(BlacklistedTokenException ex) {
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+			.body(new ApiResponse<>(false, ex.getMessage(), null));
+	}
 }

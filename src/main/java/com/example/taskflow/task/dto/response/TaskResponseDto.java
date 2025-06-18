@@ -39,7 +39,7 @@ public class TaskResponseDto {
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime createdAt;
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	private LocalDateTime modifiedAt;
+	private LocalDateTime updatedAt;
 
 	public static TaskResponseDto from(Task task) {
 		return new TaskResponseDto(
@@ -52,7 +52,7 @@ public class TaskResponseDto {
 			task.getStatus(),
 			task.getPriority(),
 			task.getCreatedAt(),
-			task.getModifiedAt()
+			task.getUpdatedAt()
 		);
 	}
 }

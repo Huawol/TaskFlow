@@ -1,5 +1,6 @@
 package com.example.taskflow.security.filter;
 
+import com.example.taskflow.security.Repository.TokenBlacklistRepository;
 import com.example.taskflow.security.config.JwtUtil;
 import com.example.taskflow.security.dto.AuthUserDto;
 import com.example.taskflow.security.enums.UserRole;
@@ -26,6 +27,8 @@ import java.util.List;
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
+    private final TokenBlacklistRepository tokenBlacklistRepository;
+
     @Override
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
 
@@ -43,6 +46,11 @@ public class JwtFilter extends OncePerRequestFilter {
             Claims claims = jwtUtil.extractClaims(jwt);
             if (claims == null) {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "잘못된 JWT 토큰입니다.");
+                return;
+            }
+
+            if (tokenBlacklistRepository.existsByToken(jwt)) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "만료된 JWT 토큰입니다.");
                 return;
             }
 
