@@ -29,7 +29,7 @@ public class CommentService {
         this.taskRepository = taskRepository;
     }
 
-    public Long saveComment(Long taskId, Long userId, String content) {
+    public Long saveComment(Long userId, Long taskId, String content) {
         Task task = taskRepository.findById(taskId).orElseThrow(
                 () -> new IllegalArgumentException("해당 Task가 존재하지 않습니다. id: " + taskId));
 

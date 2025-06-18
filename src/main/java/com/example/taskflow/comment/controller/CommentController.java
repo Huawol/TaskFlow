@@ -31,10 +31,13 @@ public class CommentController {
 
     @PostMapping
     public ResponseEntity<Long> saveComment(
-            @RequestBody CommentCreateRequestDto requestDto
+            @RequestBody CommentCreateRequestDto requestDto,
+            HttpSession session
     ) {
 
+        User loginUser = getLoginUser(session);
         Long commentId = commentService.saveComment(
+                loginUser.getId(),
                 requestDto.getTaskId(),
                 requestDto.getContent()
         );
