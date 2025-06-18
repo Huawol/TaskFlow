@@ -72,15 +72,15 @@ public interface TaskStatisticsRepository extends JpaRepository<Task, Long> {
     일별 작업 트렌드 그래프 용 (createdAt 기준)*/
     @Query("""
                 SELECT new com.example.taskflow.dashboard.dto.DailyTaskTrendDto(
-                 DATE(t.createdAt),      
+                 function('date', t.createdAt),      
                  COUNT(t),              
                  SUM(CASE WHEN t.status ='DONE' THEN 1L ELSE 0L END)
                  )
                  FROM Task t
                  WHERE t.createdAt BETWEEN :start AND :end
                     AND t.deleted = false
-                    GROUP BY DATE(t.createdAt)
-                    ORDER BY DATE(t.createdAt)
+                    GROUP BY function('date', t.createdAt)
+                    ORDER BY function('date', t.createdAt)
             """)
     List<DailyTaskTrendDto> fetchDailyTrend(@Param("start") LocalDateTime start,
                                             @Param("end") LocalDateTime end);
@@ -128,15 +128,15 @@ public interface TaskStatisticsRepository extends JpaRepository<Task, Long> {
     @Query(
             """
                     SELECT new com.example.taskflow.dashboard.dto.MonthlyTaskTrendDto(
-                            MONTH(t.createdAt),
+                            function('date', t.createdAt),
                             COUNT(t),
                             SUM(CASE WHEN t.status = 'DONE' THEN 1L ELSE 0L END)
                             )
                             FROM Task t
                             WHERE YEAR(t.createdAt) = :year
                             AND t.deleted = false
-                            GROUP BY MONTH(t.createdAt)
-                            ORDER BY MONTH(t.createdAt)
+                            GROUP BY function('date', t.createdAt)
+                            ORDER BY function('date', t.createdAt)
                     
                     """)
     List<MonthlyTaskTrendDto> fetchFixedMonthlyTrend(@Param("year") int year);
