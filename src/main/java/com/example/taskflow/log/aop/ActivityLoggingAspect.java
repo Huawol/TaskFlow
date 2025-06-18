@@ -75,15 +75,23 @@ public class ActivityLoggingAspect {
         //파라미터 값 배열 paramNames -> 1:1 매칭
         Object[] args = joinPoint.getArgs();
 
-        Long targetId = null;
+        //로그인 및 타 케이스를 위해 Object
+        Object targetValue = null;
         for (int i = 0; i < paramNames.length; i++) {
             if (paramNames[i].equals(targetParamName)) { //동일한 이름 찾기 ex) "createdById"
-                Object arg = args[i]; //값 꺼내기
-                if (arg instanceof Long) { //Long 타입 확인
-                    targetId = (Long) arg;
+                Object arg = args[i];//값 꺼내기
+
+                if (arg instanceof Long || arg instanceof String) { //Long 타입 확인
+                    targetValue = arg;
                 } else if (arg != null) { //Long 아니고, null도 아닌 그 외 정보값을 가졌을 때
                     try {
-                        targetId = Long.valueOf(arg.toString());
+                        //상황에 따라 "userName", "email", "id" 등으로 필드명 바꿔서 시도
+                        java.lang.reflect.Field field = arg.getClass().getDeclaredField("userName");
+                        field.setAccessible(true);
+                        Object value = field.get(arg);
+                        if (value != null) {
+                            targetValue = value;
+                        }
                     } catch (NumberFormatException e) {
                         log.warn("targetId 파라미터 변환 실패: {}", arg, e);
                     }
@@ -91,8 +99,20 @@ public class ActivityLoggingAspect {
                 break;
             }
         }
-        if (targetId == null) {
+        if (targetValue == null) {
             log.warn("targetParam '{}'을(를) 파라미터에서 찾을 수 없습니다.", targetParamName);
+        }
+
+        Long targetId = null;
+        if (targetValue instanceof Long) {
+            targetId = (Long) targetValue;
+        } else if (targetValue instanceof String) {
+            try {
+               targetId = Long.valueOf((String) targetValue);
+            } catch (NumberFormatException e) {
+                targetId = null;
+            }
+
         }
 
         String methodType = request.getMethod();

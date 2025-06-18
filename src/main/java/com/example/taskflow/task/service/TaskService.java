@@ -69,6 +69,7 @@ public class TaskService {
 	}
 
 	//상태값 변경 메서드
+	@ActivityLogging(value = ActivityType.TASK_STATUS_CHANGED, targetParam = "id")
 	public TaskWithCommentResponseDto changeStatusTask(Long id, TaskStatusRequestDto requestDto, AuthUserDto authUserDto) {
 		Task foundTask = getTaskOrThrow(taskRepository.findByIdAndDeletedFalse(id));
 
@@ -91,6 +92,7 @@ public class TaskService {
 		return TaskWithCommentResponseDto.from(foundTask, commentSimpleResponses);
 	}
 
+	@ActivityLogging(value = ActivityType.TASK_UPDATED, targetParam = "createdById")
 	public TaskResponseDto changeTask(Long id, TaskUpdateRequestDto requestDto, AuthUserDto authUserDto) {
 		Long authId = authUserDto.getId();
 		Task foundTask = getTaskOrThrow(taskRepository.findByIdAndDeletedFalse(id));
@@ -107,6 +109,7 @@ public class TaskService {
 		return TaskResponseDto.from(foundTask);
 	}
 
+	@ActivityLogging(value = ActivityType.TASK_DELETED, targetParam = "createdById")
 	public void softDeleteTask(Long id, AuthUserDto authUserDto) {
 		Long authId = authUserDto.getId();
 		Task foundTask = getTaskOrThrow(taskRepository.findByIdAndDeletedFalse(id));

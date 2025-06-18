@@ -5,6 +5,8 @@ import com.example.taskflow.log.aop.TrackTime;
 import com.example.taskflow.log.repository.ActivityRepository;
 import com.example.taskflow.log.entity.ActivityType;
 import com.example.taskflow.log.dto.response.ActivityLogResponseDto;
+import com.example.taskflow.user.entity.User;
+import com.example.taskflow.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +20,7 @@ import java.time.LocalDateTime;
     public class ActivityService {
 
     private final ActivityRepository activityRepository;
+    private final UserRepository userRepository;
 
     //전체조회 + 조건 별 조회
 
@@ -31,7 +34,13 @@ import java.time.LocalDateTime;
 
         return activityRepository.findByAllFilters(
                 userId,activityType,targetId,startDate,endDate, pageable)
-                .map(ActivityLogResponseDto::toDto);
+                .map(log ->{
+                       String username = userRepository.findById(log.getUserId())
+                .map(User::getUserName)
+                .orElse("알 수 없는 계정");
+                       return ActivityLogResponseDto.toDto(log,username);
+                }
+                );
 
     }
 

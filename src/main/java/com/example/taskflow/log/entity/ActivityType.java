@@ -20,15 +20,15 @@ public enum ActivityType {
     }
 
     //활동 유형에 따라 설명 메세지 동적 설정
-    public String description(ActivityLogCreateRequestDto requestDto,Long userId) {
+    public String description(ActivityLogCreateRequestDto requestDto,String username) {
         return switch (this) {
             case TASK_STATUS_CHANGED -> String.format("작업 상태가 %s에서 %s로 변경되었습니다.",
                     requestDto.getBeforeStatus(), requestDto.getAfterStatus());
-            case USER_LOGGED_IN -> String.format("%s가 로그인했습니다.", userId);
-            case USER_LOGGED_OUT -> String.format("%s가 로그아웃했습니다.", userId);
-            case COMMENT_CREATED -> String.format("%s의 댓글이 작업되었습니다.", userId);
-            case COMMENT_UPDATED -> String.format("%s의 댓글이 수정되었습니다.", userId);
-            case COMMENT_DELETED -> String.format("%s의 댓글이 삭제되었습니다.", userId);
+            case USER_LOGGED_IN -> String.format("%s가 로그인했습니다.", username);
+            case USER_LOGGED_OUT -> String.format("%s가 로그아웃했습니다.", username);
+            case COMMENT_CREATED -> String.format("%s의 댓글이 작업되었습니다.", username);
+            case COMMENT_UPDATED -> String.format("%s의 댓글이 수정되었습니다.", username);
+            case COMMENT_DELETED -> String.format("%s의 댓글이 삭제되었습니다.", username);
             default -> message; //static 메세지가 정의된 경우 사용
         };
 

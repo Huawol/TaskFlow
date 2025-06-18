@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	@ActivityLogging(value = ActivityType.USER_LOGGED_IN, targetParam = "loginRequestDto")
+	@ActivityLogging(value = ActivityType.USER_LOGGED_IN, targetParam = "userName")
 	public LoginResponseDto login(LoginRequestDto loginRequestDto) {
 		User user = userRepository.findByUserNameAndDeletedFalse(loginRequestDto.getUserName())
 			.orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 아이디입니다."));

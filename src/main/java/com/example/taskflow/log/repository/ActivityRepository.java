@@ -15,11 +15,11 @@ public interface ActivityRepository extends JpaRepository<ActivityLog, Long> {
 
     @Query("""
          SELECT l FROM ActivityLog l
-                  WHERE (:userId IS NULL OR l.userId = : userId)
-                           AND (:activityType IS NULL OR l.activityType = : activityType)
-                                    AND (:targetId IS NULL OR l.targetId = : targetId)
-                                             AND (:startDate IS NULL OR l.timestamp >= : startDate)
-                                                      AND (:endDate IS NULL OR  l.timestamp <= : endDate)
+                  WHERE (:userId IS NULL OR l.userId = :userId)
+                           AND (:activityType IS NULL OR l.activityType = :activityType)
+                                    AND (:targetId IS NULL OR l.targetId = :targetId)
+                                             AND (:startDate IS NULL OR l.timestamp >= :startDate)
+                                                      AND (:endDate IS NULL OR  l.timestamp <= :endDate)
          """)
 
     Page<ActivityLog> findByAllFilters(
