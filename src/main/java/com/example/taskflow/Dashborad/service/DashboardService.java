@@ -83,7 +83,7 @@ public class DashboardService {
     }
 
 
-    public List<TaskSimpleResponseDto> getMyTasksByDate(Long userId, LocalDate date) {
+/*    public List<TaskSimpleResponseDto> getMyTasksByDate(Long userId, LocalDate date) {
         List<Task> tasks = taskStatisticsRepository.findAllByUserIdAndDate(
                 userId,
                 date,
@@ -92,10 +92,10 @@ public class DashboardService {
                 .map(TaskSimpleResponseDto::from)//영재님 Task에서
                 .collect(Collectors.toList());
 
-    }
+    }*/
 
 
-    //최근 1주(월~일) 트렌드 반환
+/*    //최근 1주(월~일) 트렌드 반환
     public List<DailyTaskTrendDto> getWeeklyTrend(LocalDate today) {
 
         //이번주 월요일 00:00
@@ -107,7 +107,7 @@ public class DashboardService {
 
         return taskStatisticsRepository.fetchDailyTrend(start, end);
 
-    }
+    }*/
 
     public TaskStatusRatioDto getStatusRatio() {
 
