@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ import com.example.taskflow.task.dto.response.TaskResponseDto;
 import com.example.taskflow.task.dto.response.TaskWithCommentResponseDto;
 import com.example.taskflow.task.entity.Status;
 import com.example.taskflow.task.entity.Task;
+import com.example.taskflow.task.event.TaskDeletedEvent;
 import com.example.taskflow.task.exception.StatusTransitionException;
 import com.example.taskflow.task.repository.TaskRepository;
 import com.example.taskflow.user.entity.User;
@@ -42,6 +44,7 @@ public class TaskService {
 	private final TaskRepository taskRepository;
 	private final UserRepository userRepository;
 	private final CommentRepository commentRepository;
+	private final ApplicationEventPublisher eventPublisher;
 
 	public TaskResponseDto saveTask(Long createdById, TaskCreateRequestDto requestDto) {
 		//비즈니스 로직 시작
@@ -117,6 +120,8 @@ public class TaskService {
 
 		foundTask.softDelete(); //논리적 삭제 메서드 호출
 		foundTask.setDeletedAt(); //삭제 시각 기록
+
+		eventPublisher.publishEvent(new TaskDeletedEvent(foundTask.getId()));
 	}
 
 	/*
