@@ -18,7 +18,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -26,7 +25,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @RestController
-@RequestMapping("api/logs")
+@RequestMapping("/activities")
 @RequiredArgsConstructor
 public class ActivityLogController {
 
@@ -36,8 +35,8 @@ public class ActivityLogController {
     @GetMapping
     public ResponseEntity<ApiResponse<Page<ActivityLogResponseDto>>> readAllLogs(
             @RequestParam(required = false) Long userId,
-            @RequestParam(required = false) ActivityType activityType,
-            @RequestParam(required = false) Long targetId,
+            @RequestParam(required = false, name = "type") ActivityType activityType,
+            @RequestParam(required = false, name = "taskId") Long targetId,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)LocalDate startDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)LocalDate endDate,
             @PageableDefault(size = 10, sort = "timestamp", direction = Sort.Direction.DESC) Pageable pageable) {

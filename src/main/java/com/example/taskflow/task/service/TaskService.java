@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.example.taskflow.log.aop.ActivityLogging;
+import com.example.taskflow.log.entity.ActivityType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +35,8 @@ public class TaskService {
 	private final UserRepository userRepository;
 	private final CommentRepository commentRepository;
 
+
+	@ActivityLogging(value = ActivityType.TASK_CREATED, targetParam = "createdById")
 	public TaskResponseDto saveTask(Long createdById, TaskCreateRequestDto requestDto) {
 		//테스트용 로직
 		User user1 = new User();
