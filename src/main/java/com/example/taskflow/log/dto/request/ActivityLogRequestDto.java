@@ -16,17 +16,9 @@ public class ActivityLogRequestDto {
 
     private Long userId;
 
-    private String ipAddress;
-
-    private String url;
-
-    private String httpMethod;
-
     private ActivityType activityType;
 
     private Long targetId;
-
-    private LocalDateTime timestamp;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate startDate;

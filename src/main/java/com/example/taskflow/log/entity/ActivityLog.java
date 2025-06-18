@@ -43,26 +43,15 @@ public class ActivityLog extends BaseEntity {
     @Column(length = 255,nullable = false)
     private String description;
 
-    //논리적  삭제
-    @Column(name = "deleted", nullable = false)
-    private Boolean deleted = false;
 
-
-    public void softDelete() {
-        this.deleted = true;
-    }
-
-    public static ActivityLog create(ActivityLogCreateRequestDto requestDto, String newDescription){
+    public static ActivityLog create(ActivityLogCreateRequestDto requestDto, String description,
+                                     Long userId) {
         return ActivityLog.builder()
-                .userId(requestDto.getUserId())
-                .ipAddress(requestDto.getIpAddress())
-                .httpMethod(requestDto.getHttpMethod())
-                .url(requestDto.getUrl())
+                .userId(userId)
                 .targetId(requestDto.getTargetId())
                 .activityType(requestDto.getActivityType())
                 .timestamp(LocalDateTime.now())
-                .description(newDescription)
-                .deleted(false)
+                .description(description)
                 .build();
     }
 
