@@ -56,7 +56,7 @@ public class UserController {
     //회원탈퇴 API
     //- 클라이언트가 전달한 비밀번호를 검증 후 soft delete 처리
     //- 인증된 사용자 본인만 가능
-    @DeleteMapping("/me")
+    @DeleteMapping("/delete")
     public ResponseEntity<Void> deleteUser(
         @AuthenticationPrincipal UserDetails userDetails,
         @RequestBody UserDeleteRequestDto requestDto) {
