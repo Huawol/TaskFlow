@@ -89,7 +89,7 @@ public class DashboardService {
                 date,
                 List.of(Status.TODO, Status.IN_PROGRESS));
         return tasks.stream()
-                .map(TaskSimpleResponseDto::from)
+                .map(TaskSimpleResponseDto::from)//영재님 Task에서
                 .collect(Collectors.toList());
 
     }
