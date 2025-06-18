@@ -71,10 +71,11 @@ public class UserController {
     //로그아웃 API
     //- 서버 처리 없음, 클라이언트가 토큰을 삭제
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(HttpServletRequest request) {
+    public ResponseEntity<ApiResponse<Void>> logout(HttpServletRequest request) {
         //request 에서 토큰 값 가져오기
         String token = jwtUtil.substringToken(request.getHeader("Authorization"));
         userService.logout(token);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(new ApiResponse<>(true, "로그아웃 되었습니다. 해당 토큰은 사용할 수 없습니다.", null));
     }
 }

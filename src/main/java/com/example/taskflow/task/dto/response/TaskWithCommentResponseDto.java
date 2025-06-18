@@ -22,6 +22,8 @@ public class TaskWithCommentResponseDto {
 
 	private Long id;
 
+	private Long createdById;
+
 	private Long assignedToId;
 
 	private String title;
@@ -46,9 +48,27 @@ public class TaskWithCommentResponseDto {
 	private LocalDateTime updatedAt;
 
 	public static TaskWithCommentResponseDto from(Task task, List<CommentSimpleResponseDto> comments) {
+		if(task.getAssignedTo() != null) {
+			return new TaskWithCommentResponseDto(
+				task.getId(),
+				task.getCreatedBy().getId(),
+				task.getAssignedTo().getId(),
+				task.getTitle(),
+				task.getContent(),
+				task.getStartDate(),
+				task.getDeadline(),
+				comments,
+				task.getStatus(),
+				task.getPriority(),
+				task.getCreatedAt(),
+				task.getUpdatedAt()
+			);
+		}
+
 		return new TaskWithCommentResponseDto(
 			task.getId(),
-			task.getAssignedTo().getId(),
+			task.getCreatedBy().getId(),
+			null,
 			task.getTitle(),
 			task.getContent(),
 			task.getStartDate(),

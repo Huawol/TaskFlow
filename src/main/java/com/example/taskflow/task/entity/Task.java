@@ -91,4 +91,8 @@ public class Task extends BaseEntity {
 		this.deletedAt = LocalDateTime.now();
 	}
 
+	//담당자 미할당 메서드
+	public void unassignTask() {
+		this.assignedTo = null;
+	}
 }

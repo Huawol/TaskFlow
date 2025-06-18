@@ -20,6 +20,8 @@ public class TaskResponseDto {
 
 	private Long id;
 
+	private Long createdById;
+
 	private Long assignedToId;
 
 	private String title;
@@ -42,9 +44,26 @@ public class TaskResponseDto {
 	private LocalDateTime updatedAt;
 
 	public static TaskResponseDto from(Task task) {
+		if(task.getAssignedTo() != null) {
+			return new TaskResponseDto(
+				task.getId(),
+				task.getCreatedBy().getId(),
+				task.getAssignedTo().getId(),
+				task.getTitle(),
+				task.getContent(),
+				task.getStartDate(),
+				task.getDeadline(),
+				task.getStatus(),
+				task.getPriority(),
+				task.getCreatedAt(),
+				task.getUpdatedAt()
+			);
+		}
+
 		return new TaskResponseDto(
 			task.getId(),
-			task.getAssignedTo().getId(),
+			task.getCreatedBy().getId(),
+			null,
 			task.getTitle(),
 			task.getContent(),
 			task.getStartDate(),
