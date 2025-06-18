@@ -15,6 +15,8 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
 	List<Comment> findByDeletedFalse();
 
+	List<Comment> findByTaskIdAndDeletedFalse(Long taskId);
+
 	default Comment findByIdOrElseThrow(Long commentId) {
 		return findById(commentId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + commentId));
 	}

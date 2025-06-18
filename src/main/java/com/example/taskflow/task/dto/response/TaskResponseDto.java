@@ -44,7 +44,7 @@ public class TaskResponseDto {
 	public static TaskResponseDto from(Task task) {
 		return new TaskResponseDto(
 			task.getId(),
-			task.getAssignedTo().getUserId(),
+			task.getAssignedTo().getId(),
 			task.getTitle(),
 			task.getContent(),
 			task.getStartDate(),
