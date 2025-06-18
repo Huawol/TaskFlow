@@ -7,7 +7,7 @@ public class CommentCreateRequestDto {
     private final Long taskId;
     private final String content;
 
-    public CommentCreateRequestDto(Long postId, String content) {
+    public CommentCreateRequestDto(Long taskId, String content) {
         this.taskId = taskId;
         this.content = content;
     }
