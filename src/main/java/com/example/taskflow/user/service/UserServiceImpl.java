@@ -49,6 +49,14 @@ public class UserServiceImpl implements UserService {
 		if (userRepository.existsByEmail(signupRequestDto.getEmail())) {
 			throw new DuplicateRequestException("이미 존재하는 이메일입니다.");
 		}
+
+		/*
+		userName 즉 일반적으로 사용되는 id 값도 중복불가
+		*/
+		if (userRepository.existsByUserName(signupRequestDto.getUserName())) {
+			throw new DuplicateRequestException("이미 존재하는 유저명입니다.");
+		}
+
 		User user = new User(
 			signupRequestDto.getEmail(),
 			passwordEncoder.encode(signupRequestDto.getPassword()),

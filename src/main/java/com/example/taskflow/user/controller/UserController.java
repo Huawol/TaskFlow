@@ -4,6 +4,7 @@ import com.example.taskflow.common.ApiResponse;
 import com.example.taskflow.log.aop.ActivityLogging;
 import com.example.taskflow.log.entity.ActivityType;
 import com.example.taskflow.security.config.JwtUtil;
+import com.example.taskflow.security.dto.AuthUserDto;
 import com.example.taskflow.security.enums.UserRole;
 import com.example.taskflow.user.dto.LoginRequestDto;
 import com.example.taskflow.user.dto.LoginResponseDto;
@@ -20,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -58,10 +58,10 @@ public class UserController {
     //- 인증된 사용자 본인만 가능
     @DeleteMapping("/delete")
     public ResponseEntity<Void> deleteUser(
-        @AuthenticationPrincipal UserDetails userDetails,
+        @AuthenticationPrincipal AuthUserDto authUserDto,
         @RequestBody UserDeleteRequestDto requestDto) {
 
-        userService.deleteUser(userDetails.getUsername(), requestDto.getPassword());
+        userService.deleteUser(authUserDto.getEmail(), requestDto.getPassword());
         return ResponseEntity.noContent().build();
     }
 
