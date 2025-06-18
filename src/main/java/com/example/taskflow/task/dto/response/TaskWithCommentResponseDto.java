@@ -43,7 +43,7 @@ public class TaskWithCommentResponseDto {
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime createdAt;
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	private LocalDateTime modifiedAt;
+	private LocalDateTime updatedAt;
 
 	public static TaskWithCommentResponseDto from(Task task, List<CommentSimpleResponseDto> comments) {
 		return new TaskWithCommentResponseDto(
@@ -57,7 +57,7 @@ public class TaskWithCommentResponseDto {
 			task.getStatus(),
 			task.getPriority(),
 			task.getCreatedAt(),
-			task.getModifiedAt()
+			task.getUpdatedAt()
 		);
 	}
 }

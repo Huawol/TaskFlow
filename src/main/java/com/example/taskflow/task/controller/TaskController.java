@@ -73,7 +73,7 @@ public class TaskController {
 		@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
 		@RequestParam @DateTimeFormat(pattern = "yyyyMMdd")LocalDate periodStart, @RequestParam @DateTimeFormat(pattern = "yyyyMMdd")LocalDate periodEnd
 	) {
-		Pageable pageable = PageRequest.of(page, size, Sort.by("modifiedAt").descending());
+		Pageable pageable = PageRequest.of(page, size, Sort.by("updatedAt").descending());
 		return ResponseEntity.status(HttpStatus.OK)
 			.body(new ApiResponse<>(true, "정상적으로 할일을 조회했습니다.", taskService.findPagedTasks(pageable, periodStart, periodEnd)));
 	}
