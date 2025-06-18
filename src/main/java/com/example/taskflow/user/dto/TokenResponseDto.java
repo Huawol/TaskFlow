@@ -1,4 +1,4 @@
-package com.example.taskflow.login.dto;
+package com.example.taskflow.user.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,5 +7,5 @@ import lombok.Getter;
 @AllArgsConstructor
 public class TokenResponseDto {
 
-    private String token;
+	private String token;
 }
