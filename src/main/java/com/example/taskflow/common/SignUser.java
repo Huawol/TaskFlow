@@ -1,3 +1,4 @@
+/*
 package com.example.taskflow.common;
 
 import com.example.taskflow.security.enums.UserRole;
@@ -36,3 +37,4 @@ public class SignUser extends BaseEntity {
         this.name = name;
     }
 }
+*/
