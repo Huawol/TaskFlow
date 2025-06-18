@@ -48,7 +48,7 @@ public class TaskWithCommentResponseDto {
 	public static TaskWithCommentResponseDto from(Task task, List<CommentSimpleResponseDto> comments) {
 		return new TaskWithCommentResponseDto(
 			task.getId(),
-			task.getAssignedTo().getUserId(),
+			task.getAssignedTo().getId(),
 			task.getTitle(),
 			task.getContent(),
 			task.getStartDate(),
