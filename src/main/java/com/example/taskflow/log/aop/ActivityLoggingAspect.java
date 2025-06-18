@@ -6,6 +6,7 @@ import com.example.taskflow.log.entity.ActivityLog;
 import com.example.taskflow.log.entity.ActivityType;
 import com.example.taskflow.log.repository.ActivityRepository;
 import com.example.taskflow.security.dto.AuthUserDto;
+import com.example.taskflow.user.dto.LoginResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,18 +46,6 @@ public class ActivityLoggingAspect {
         //요청정보 추출(ip,url 등 기록용)
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
 
-        // 인증 정보 추출 (User) ->Spring Security에서 현재 로그인한 사용자의 인증정보 추출
-         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-         Long userId = null;
-
-         if (authentication != null && authentication.getPrincipal() instanceof AuthUserDto user) {
-            userId = user.getId();
-         }
-
-         if (userId == null) {
-            throw new UserNotFoundException("유저를 찾을 수 없습니다.");
-         }
-
          //ActivityType 추출 AOP 프록시 -> MethodSignature 정보
          MethodSignature signature = (MethodSignature) joinPoint.getSignature();
          Method method = signature.getMethod();
@@ -89,18 +78,13 @@ public class ActivityLoggingAspect {
                         java.lang.reflect.Field field = arg.getClass().getDeclaredField("userName");
                         field.setAccessible(true);
                         Object value = field.get(arg);
-                        if (value != null) {
-                            targetValue = value;
-                        }
+                        if (value != null)  targetValue = value;
                     } catch (NumberFormatException e) {
                         log.warn("targetId 파라미터 변환 실패: {}", arg, e);
                     }
                 }
                 break;
             }
-        }
-        if (targetValue == null) {
-            log.warn("targetParam '{}'을(를) 파라미터에서 찾을 수 없습니다.", targetParamName);
         }
 
         Long targetId = null;
@@ -109,17 +93,49 @@ public class ActivityLoggingAspect {
         } else if (targetValue instanceof String) {
             try {
                targetId = Long.valueOf((String) targetValue);
-            } catch (NumberFormatException e) {
-                targetId = null;
-            }
+            } catch (NumberFormatException e) {}
 
         }
+        if (targetId == null){
+            targetId = 0L;
+        }
+        // 2. 로그인일 때만 특별 처리
 
         String methodType = request.getMethod();
         String uri = request.getRequestURI();
         String ipAddress = request.getRemoteAddr();
+        if (activityType == ActivityType.USER_LOGGED_IN) {
+            Object result = joinPoint.proceed();
+            // proceed() 이후에 User 정보 또는 LoginResponseDto에서 userId 꺼내기
+            Long userId = null;
+            if (result instanceof LoginResponseDto responseDto) {
+                userId = responseDto.getId();
+            }
+            if (userId == null) userId = 0L; // 안전장치
+
+            ActivityLog log = ActivityLog.builder()
+                    .userId(userId)
+                    .activityType(activityType)
+                    .targetId(targetId)
+                    .timestamp(LocalDateTime.now())
+                    .ipAddress(ipAddress)
+                    .httpMethod(methodType)
+                    .url(uri)
+                    .description(activityType.name() + " 로그인 활동 로그 AOP")
+                    .build();
+
+            activityRepository.save(log);
+            return result;
+        }
 
         Object result = joinPoint.proceed();
+
+        // 인증 정보 추출 (User) ->Spring Security에서 현재 로그인한 사용자의 인증정보 추출
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Long userId = null;
+        if (authentication != null && authentication.getPrincipal() instanceof AuthUserDto user) {
+            userId = user.getId();
+        }
 
         ActivityLog log = ActivityLog.builder()
                 .userId(userId)
