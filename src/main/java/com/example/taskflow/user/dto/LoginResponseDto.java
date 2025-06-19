@@ -1,11 +1,12 @@
 package com.example.taskflow.user.dto;
 
+import java.time.LocalDateTime;
+
 import com.example.taskflow.user.entity.User;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -25,4 +26,5 @@ public class LoginResponseDto {
 		this.name = user.getName();
 		this.createdAt = user.getCreatedAt();
 	}
+
 }

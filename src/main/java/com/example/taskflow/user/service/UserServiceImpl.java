@@ -1,6 +1,4 @@
 package com.example.taskflow.user.service;
-import com.example.taskflow.log.aop.ActivityLogging;
-import com.example.taskflow.log.entity.ActivityType;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -9,6 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.taskflow.common.exception.LoginFailedException;
 import com.example.taskflow.common.exception.UserNotFoundException;
+import com.example.taskflow.log.aop.ActivityLogging;
+import com.example.taskflow.log.entity.ActivityType;
 import com.example.taskflow.security.PasswordEncoder;
 import com.example.taskflow.security.Repository.TokenBlacklistRepository;
 import com.example.taskflow.security.config.JwtUtil;
@@ -25,7 +25,6 @@ import com.example.taskflow.user.repository.UserRepository;
 import com.sun.jdi.request.DuplicateRequestException;
 
 import lombok.RequiredArgsConstructor;
-
 
 //사용자 서비스 구현체
 @Service
@@ -52,7 +51,7 @@ public class UserServiceImpl implements UserService {
 			throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
 		}
 
-		if(tokenBlacklistRepository.existsByToken(token)){
+		if (tokenBlacklistRepository.existsByToken(token)) {
 			throw new BlacklistedTokenException("이미 블랙리스트에 등록된 토큰입니다.");
 		}
 		TokenBlacklist tokenBlacklist = new TokenBlacklist(token, jwtUtil.getExpiredAt(token));
@@ -63,7 +62,6 @@ public class UserServiceImpl implements UserService {
 		//유저 삭제 후 이벤트 발행
 		eventPublisher.publishEvent(new UserDeletedEvent(user.getId()));
 	}
-
 
 	@Override
 	public SignupResponseDto signUp(SignupRequestDto signupRequestDto) {
@@ -106,10 +104,11 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@ActivityLogging(value = ActivityType.USER_LOGGED_OUT, targetParam = "userName")
 	public void logout(String token) {
-		if(tokenBlacklistRepository.existsByToken(token)){
+		if (tokenBlacklistRepository.existsByToken(token)) {
 			throw new BlacklistedTokenException("이미 블랙리스트에 등록된 토큰입니다.");
 		}
 		TokenBlacklist tokenBlacklist = new TokenBlacklist(token, jwtUtil.getExpiredAt(token));
 		tokenBlacklistRepository.save(tokenBlacklist);
 	}
+
 }

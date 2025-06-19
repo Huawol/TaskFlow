@@ -10,9 +10,11 @@ import org.springframework.data.repository.query.Param;
 import com.example.taskflow.security.entity.TokenBlacklist;
 
 public interface TokenBlacklistRepository extends JpaRepository<TokenBlacklist, Long> {
+
 	boolean existsByToken(String token);
 
 	@Modifying
 	@Query("delete from TokenBlacklist t where t.expiredAt < :expiration")
 	int deleteTokenBlacklistByExpiredAtBefore(@Param("expiration") LocalDateTime expiration);
+
 }

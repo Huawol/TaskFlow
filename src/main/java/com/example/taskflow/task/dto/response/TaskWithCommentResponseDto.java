@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.example.taskflow.comment.entity.Comment;
 import com.example.taskflow.task.entity.Priority;
 import com.example.taskflow.task.entity.Status;
 import com.example.taskflow.task.entity.Task;
@@ -48,7 +47,7 @@ public class TaskWithCommentResponseDto {
 	private LocalDateTime updatedAt;
 
 	public static TaskWithCommentResponseDto from(Task task, List<CommentSimpleResponseDto> comments) {
-		if(task.getAssignedTo() != null) {
+		if (task.getAssignedTo() != null) {
 			return new TaskWithCommentResponseDto(
 				task.getId(),
 				task.getCreatedBy().getId(),
@@ -80,4 +79,5 @@ public class TaskWithCommentResponseDto {
 			task.getUpdatedAt()
 		);
 	}
+
 }

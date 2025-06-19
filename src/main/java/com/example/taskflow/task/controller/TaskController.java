@@ -30,7 +30,6 @@ import com.example.taskflow.task.dto.request.TaskUpdateRequestDto;
 import com.example.taskflow.task.dto.response.TaskResponseDto;
 import com.example.taskflow.task.dto.response.TaskWithCommentResponseDto;
 import com.example.taskflow.task.service.TaskService;
-import com.example.taskflow.user.entity.User;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -61,9 +60,11 @@ public class TaskController {
 	@PreAuthorize("isAuthenticated()")
 	@PatchMapping("/{id}")
 	public ResponseEntity<ApiResponse<TaskWithCommentResponseDto>> updateStatusTask(
-		@PathVariable Long id, @Valid @RequestBody TaskStatusRequestDto requestDto, @AuthenticationPrincipal AuthUserDto authUserDto) {
+		@PathVariable Long id, @Valid @RequestBody TaskStatusRequestDto requestDto,
+		@AuthenticationPrincipal AuthUserDto authUserDto) {
 		return ResponseEntity.status(HttpStatus.OK)
-			.body(new ApiResponse<>(true, "정상적으로 상태를 변경했습니다.", taskService.changeStatusTask(id, requestDto, authUserDto)));
+			.body(new ApiResponse<>(true, "정상적으로 상태를 변경했습니다.",
+				taskService.changeStatusTask(id, requestDto, authUserDto)));
 	}
 
 	//날짜 검색 기능
@@ -71,17 +72,20 @@ public class TaskController {
 	@GetMapping
 	public ResponseEntity<ApiResponse<Page<TaskResponseDto>>> getPagedTasks(
 		@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
-		@RequestParam @DateTimeFormat(pattern = "yyyyMMdd")LocalDate periodStart, @RequestParam @DateTimeFormat(pattern = "yyyyMMdd")LocalDate periodEnd
+		@RequestParam @DateTimeFormat(pattern = "yyyyMMdd") LocalDate periodStart,
+		@RequestParam @DateTimeFormat(pattern = "yyyyMMdd") LocalDate periodEnd
 	) {
 		Pageable pageable = PageRequest.of(page, size, Sort.by("updatedAt").descending());
 		return ResponseEntity.status(HttpStatus.OK)
-			.body(new ApiResponse<>(true, "정상적으로 할일을 조회했습니다.", taskService.findPagedTasks(pageable, periodStart, periodEnd)));
+			.body(new ApiResponse<>(true, "정상적으로 할일을 조회했습니다.",
+				taskService.findPagedTasks(pageable, periodStart, periodEnd)));
 	}
 
 	@PreAuthorize("isAuthenticated()")
 	@PutMapping("/{id}")
 	public ResponseEntity<ApiResponse<TaskResponseDto>> updateTask(
-		@PathVariable Long id, @Valid @RequestBody TaskUpdateRequestDto requestDto, @AuthenticationPrincipal AuthUserDto authUserDto) {
+		@PathVariable Long id, @Valid @RequestBody TaskUpdateRequestDto requestDto,
+		@AuthenticationPrincipal AuthUserDto authUserDto) {
 		return ResponseEntity.status(HttpStatus.OK)
 			.body(new ApiResponse<>(true, "정상적으로 수정 되었습니다.", taskService.changeTask(id, requestDto, authUserDto)));
 	}
@@ -94,6 +98,5 @@ public class TaskController {
 		return ResponseEntity.status(HttpStatus.OK)
 			.body(new ApiResponse<>(true, "정상적으로 삭제 되었습니다.", null));
 	}
-
 
 }

@@ -4,6 +4,7 @@ import com.example.taskflow.task.exception.StatusTransitionException;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 public enum Status {
+
 	TODO, IN_PROGRESS, DONE;
 
 	@JsonCreator
@@ -14,4 +15,5 @@ public enum Status {
 			throw new StatusTransitionException("지원하지 않는 상태값입니다.");
 		}
 	}
+
 }

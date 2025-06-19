@@ -22,4 +22,5 @@ public class UserDeletedEventHandler {
 	public void handleUserDeleted(UserDeletedEvent event) {
 		taskService.ownerDeletionForTask(event.getUserId());
 	}
+
 }

@@ -6,14 +6,24 @@ import java.time.LocalDateTime;
 import com.example.taskflow.common.BaseEntity;
 import com.example.taskflow.user.entity.User;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@Table(name="tasks")
+@Table(name = "tasks")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Task extends BaseEntity {
 
@@ -63,7 +73,8 @@ public class Task extends BaseEntity {
 	}
 
 	//생성 팩토리 메서드
-	public static Task create(User createdBy, User assignedTo, String title, String content, LocalDate deadline, String priority) {
+	public static Task create(User createdBy, User assignedTo, String title, String content, LocalDate deadline,
+		String priority) {
 		return new Task(createdBy, assignedTo, title, content, deadline, priority);
 	}
 
@@ -95,4 +106,5 @@ public class Task extends BaseEntity {
 	public void unassignTask() {
 		this.assignedTo = null;
 	}
+
 }

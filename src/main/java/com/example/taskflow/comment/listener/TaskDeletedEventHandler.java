@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class TaskDeletedEventHandler {
+
 	private final CommentService commentService;
 
 	/*
@@ -21,4 +22,5 @@ public class TaskDeletedEventHandler {
 	public void handleTaskDeleted(TaskDeletedEvent event) {
 		commentService.deleteCommentsByTaskDeletion(event.getTaskId());
 	}
+
 }

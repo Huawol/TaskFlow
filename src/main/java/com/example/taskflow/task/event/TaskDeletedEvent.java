@@ -7,5 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class TaskDeletedEvent {
+
 	private Long taskId;
+
 }

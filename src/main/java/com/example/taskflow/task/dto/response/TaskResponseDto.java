@@ -44,7 +44,7 @@ public class TaskResponseDto {
 	private LocalDateTime updatedAt;
 
 	public static TaskResponseDto from(Task task) {
-		if(task.getAssignedTo() != null) {
+		if (task.getAssignedTo() != null) {
 			return new TaskResponseDto(
 				task.getId(),
 				task.getCreatedBy().getId(),
@@ -74,4 +74,5 @@ public class TaskResponseDto {
 			task.getUpdatedAt()
 		);
 	}
+
 }

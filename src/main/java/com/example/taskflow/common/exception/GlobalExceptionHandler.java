@@ -28,10 +28,10 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ApiResponse<Void>> handlerValidationException(MethodArgumentNotValidException ex) {
 
 		String message = ex.getBindingResult()
-				.getFieldErrors()
-				.stream()
-				.map(DefaultMessageSourceResolvable::getDefaultMessage)
-				.collect(Collectors.joining(","));
+			.getFieldErrors()
+			.stream()
+			.map(DefaultMessageSourceResolvable::getDefaultMessage)
+			.collect(Collectors.joining(","));
 
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<>(false, message, null));
 	}
@@ -61,7 +61,6 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse<>(false, ex.getMessage(), null));
 	}
 
-
 	@ExceptionHandler(DuplicateRequestException.class)
 	public ResponseEntity<ApiResponse<Void>> handlerDuplicate(DuplicateRequestException ex) {
 		ApiResponse<Void> response = new ApiResponse<>(
@@ -81,6 +80,7 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ApiResponse<Void>> handlerLoginFailedException(LoginFailedException ex) {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<>(false, ex.getMessage(), null));
 	}
+
 	@ExceptionHandler(LogNotFoundException.class)
 	public ResponseEntity<ApiResponse<Void>> handlerLogNotFoundException(LogNotFoundException ex) {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>(false, ex.getMessage(), null));
@@ -91,4 +91,5 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
 			.body(new ApiResponse<>(false, ex.getMessage(), null));
 	}
+
 }

@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 public class ActivityUpdateRequestDto {
 
-    @NotNull
-    private String description;
+	@NotNull
+	private String description;
 
 }
