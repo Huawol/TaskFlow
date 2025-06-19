@@ -31,7 +31,7 @@ public class CommentController {
 	private final CommentService commentService;
 
 	@PostMapping
-	public ResponseEntity<Long> saveComment(
+	public ResponseEntity<ApiResponse<Long>> saveComment(
 		@RequestBody CommentCreateRequestDto requestDto,
 		@AuthenticationPrincipal AuthUserDto authUserDto
 	) {
@@ -42,7 +42,8 @@ public class CommentController {
 			requestDto.getContent()
 		);
 
-		return new ResponseEntity<>(commentId, HttpStatus.CREATED);
+		return ResponseEntity.status(HttpStatus.CREATED)
+			.body(new ApiResponse<>(true, "정상적으로 댓글이 생성되었습니다.", commentId));
 	}
 
 	@PatchMapping("/{commentId}")

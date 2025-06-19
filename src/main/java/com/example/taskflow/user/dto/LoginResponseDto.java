@@ -21,7 +21,7 @@ public class LoginResponseDto {
 
 	public LoginResponseDto(User user) {
 		this.id = user.getId();
-		this.username = user.getUserName();
+		this.username = user.getUsername();
 		this.email = user.getEmail();
 		this.name = user.getName();
 		this.createdAt = user.getCreatedAt();

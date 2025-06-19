@@ -38,7 +38,7 @@ public class ActivityService {
 				userId, activityType, targetId, startDate, endDate, pageable)
 			.map(log -> {
 					String username = userRepository.findById(log.getUserId())
-						.map(User::getUserName)
+						.map(User::getUsername)
 						.orElse("알 수 없는 계정");
 					return ActivityLogResponseDto.toDto(log, username);
 				}

@@ -3,12 +3,7 @@ package com.example.taskflow.user.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.taskflow.common.ApiResponse;
 import com.example.taskflow.security.config.JwtUtil;
@@ -44,7 +39,7 @@ public class UserController {
 			.body(new ApiResponse<>(true, "회원 가입되었습니다.", signupResponseDto));
 	}
 
-	@GetMapping("/login")
+	@PostMapping("/login")
 	public ResponseEntity<ApiResponse<TokenResponseDto>> Login(
 		@Valid @RequestBody LoginRequestDto loginRequestDto) {
 		LoginResponseDto loginResponseDto = userServiceImpl.login(loginRequestDto);

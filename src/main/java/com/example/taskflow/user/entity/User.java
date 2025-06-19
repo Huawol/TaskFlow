@@ -30,17 +30,17 @@ public class User extends BaseEntity {  //BaseEntity 상속 추가
 
 	private String password;
 
-	private String userName;
+	private String username;
 
 	private String name;
 
 	@Enumerated(EnumType.STRING)
 	private UserRole role;
 
-	public User(String email, String password, String userName, String name) {
+	public User(String email, String password, String username, String name) {
 		this.email = email;
 		this.password = password;
-		this.userName = userName;
+		this.username = username;
 		this.name = name;
 	}
 
