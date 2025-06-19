@@ -130,6 +130,39 @@ public class ActivityLoggingAspect {
             activityRepository.save(log);
             return result;
         }
+        //로그아웃시에 사용
+        if (activityType == ActivityType.USER_LOGGED_OUT) {
+            Object result = joinPoint.proceed();
+            // 로그아웃전까지 SecurityContext에 사용자 정보가 있음
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            Long userId = null;
+            if (authentication != null) {
+                Object principal = authentication.getPrincipal();
+                if (principal instanceof AuthLogUserDto user) {
+                    userId = user.getId();
+                } else if (principal instanceof AuthUserDto user) {
+                    userId = user.getId();
+                }
+            }
+            if (userId == null) {
+                log.warn("[AOP] 로그아웃 userId가 null입니다. 로그 미저장");
+                return result;
+            }
+            String description = activityType.description(null);
+
+            ActivityLog log = ActivityLog.builder()
+                    .userId(userId)
+                    .activityType(activityType)
+                    .targetId(0L) // 로그아웃은 엔티티 X
+                    .timestamp(LocalDateTime.now())
+                    .ipAddress(request.getRemoteAddr())
+                    .httpMethod(request.getMethod())
+                    .url(request.getRequestURI())
+                    .description(description)
+                    .build();
+            activityRepository.save(log);
+            return result;
+        }
 
         //나머지 케이스 실행
         Object result = joinPoint.proceed();
