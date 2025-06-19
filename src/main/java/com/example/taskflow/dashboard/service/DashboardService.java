@@ -4,6 +4,7 @@ package com.example.taskflow.dashboard.service;
 import com.example.taskflow.dashboard.dto.*;
 //import com.example.taskflow.dashboard.repository.ActivityLogRepository;
 import com.example.taskflow.dashboard.repository.TaskStatisticsRepository;
+import com.example.taskflow.task.dto.response.TaskResponseDto;
 import com.example.taskflow.task.entity.Status;
 import com.example.taskflow.task.entity.Task;
 import lombok.RequiredArgsConstructor;
@@ -113,8 +114,10 @@ public class DashboardService {
 
     }
 
-    public List<Task> getTaskByStatus(Status status) {
-        return taskStatisticsRepository.searchTaskByStatus_Todo(status);
+    public List<TaskResponseDto> getTaskByStatus(Status status) {
+        List<Task> foundTasks = taskStatisticsRepository.searchTaskByStatus_Todo(status);
+
+        return foundTasks.stream().map(TaskResponseDto::from).toList();
     }
 
     private Map<Status, Long> toMap(List<TaskStatusCountDto> list) {
@@ -127,4 +130,14 @@ public class DashboardService {
 
     }
 
+    @Transactional(readOnly = true)
+    public TasksCountResponseDto findTasksCount() {
+        Long count = taskStatisticsRepository.countAllTasks();
+        return TasksCountResponseDto.of(count);
+    }
+
+    public List<TaskResponseDto> foundTasksSortedByPriority() {
+        List<Task> foundTasks = taskStatisticsRepository.findTasksByQuery();
+        return foundTasks.stream().map(TaskResponseDto::from).toList();
+    }
 }

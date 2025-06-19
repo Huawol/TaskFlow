@@ -97,4 +97,18 @@ public interface TaskStatisticsRepository extends JpaRepository<Task, Long> {
             """)
     List<TaskStatusCountDto> countMyStatus(@Param("userId") Long userId);
 
+    @Query("""
+            SELECT count(t) FROM Task t WHERE t.deleted = false                        
+            """)
+    Long countAllTasks();
+
+    @Query("""
+            SELECT t FROM Task t WHERE t.deleted = false ORDER BY
+            CASE t.priority
+            WHEN 'LOW' THEN 1
+            WHEN 'MEDIUM' THEN 2
+            WHEN 'HIGH' THEN 3
+            END DESC
+            """)
+    List<Task> findTasksByQuery();
 }
