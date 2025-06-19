@@ -1,15 +1,10 @@
 package com.example.taskflow.dashboard.service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.example.taskflow.dashboard.dto.DashboardStatisticsDto;
 import com.example.taskflow.dashboard.dto.ProgressRatioDto;
 import com.example.taskflow.dashboard.dto.TaskStatusCountDto;
 import com.example.taskflow.dashboard.dto.TaskStatusRatioDto;
@@ -27,50 +22,6 @@ import lombok.RequiredArgsConstructor;
 public class DashboardService {
 
 	private final TaskStatisticsRepository taskStatisticsRepository;
-
-	public DashboardStatisticsDto getStatistics(LocalDate from, LocalDate to) {
-		LocalDateTime start = from.atStartOfDay();
-		LocalDateTime end = to.plusDays(1).atStartOfDay();
-
-		long total = taskStatisticsRepository.countByCreatedAtBetween(start, end);
-		long todo = taskStatisticsRepository.countByStatusAndPeriod(Status.TODO, start, end);
-		long inProgress = taskStatisticsRepository.countByStatusAndPeriod(Status.IN_PROGRESS, start, end);
-		long done = taskStatisticsRepository.countByStatusAndPeriod(Status.DONE, start, end);
-
-		long overdue = taskStatisticsRepository.countOverdueTasks(
-			List.of(Status.TODO, Status.IN_PROGRESS),
-			LocalDateTime.now());
-
-		double completionRate = rate(done, total);
-		double inProgressRate = rate(inProgress, total);
-		double overdueRate = rate(overdue, total);
-
-		//주간 증가율 계산
-		LocalDateTime thisWeekStart = to.minusDays(6).atStartOfDay();
-		LocalDateTime thisWeekEnd = to.plusDays(1).atStartOfDay();
-		LocalDateTime lastWeekStart = thisWeekStart.minusDays(7);
-		LocalDateTime lastWeekEnd = thisWeekStart;
-
-		long thisWeekCount = taskStatisticsRepository.countByCreatedAtBetween(thisWeekStart, thisWeekEnd);
-		long lastWeekCount = taskStatisticsRepository.countByCreatedAtBetween(lastWeekStart, lastWeekEnd);
-
-		//((이번주 개수 - 지난 주 개수)/ 지난 주 개수) * 100
-		double weeklyChangeRate = (lastWeekCount == 0)
-			? (thisWeekCount > 0 ? 100.0 : 0.0)
-			: Math.round((thisWeekCount - lastWeekCount) * 10000.0 / lastWeekCount) / 100.0;
-
-		return DashboardStatisticsDto.of(
-			total,
-			done,
-			weeklyChangeRate,
-			inProgress,
-			inProgressRate,
-			todo,
-			completionRate,
-			overdue,
-			overdueRate
-		);
-	}
 
 	private double rate(long part, long all) {
 		if (all == 0)
