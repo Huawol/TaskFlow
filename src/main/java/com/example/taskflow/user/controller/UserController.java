@@ -67,7 +67,7 @@ public class UserController {
 
         userService.deleteUser(token, authUserDto.getEmail(), requestDto.getPassword());
         return ResponseEntity.status(HttpStatus.OK)
-            .body(new ApiResponse<>(true, "정삭적으로 회원탈퇴가 완료되었습니다. 해당 토큰은 사용할 수 없습니다.", null));
+            .body(new ApiResponse<>(true, "정삭적으로 회원탈퇴가 완료되었습니다.", null));
     }
 
     //로그아웃 API

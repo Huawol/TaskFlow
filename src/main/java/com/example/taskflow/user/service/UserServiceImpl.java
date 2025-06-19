@@ -104,6 +104,7 @@ public class UserServiceImpl implements UserService {
 
 	//로그아웃 토큰 블랙리스트 저장
 	@Override
+	@ActivityLogging(value = ActivityType.USER_LOGGED_OUT, targetParam = "userName")
 	public void logout(String token) {
 		if(tokenBlacklistRepository.existsByToken(token)){
 			throw new BlacklistedTokenException("이미 블랙리스트에 등록된 토큰입니다.");
