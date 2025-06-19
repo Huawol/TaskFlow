@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.context.ApplicationEventPublisher;
 import com.example.taskflow.log.aop.ActivityLogging;
 import com.example.taskflow.log.dto.request.ActivityLogCreateRequestDto;
 import com.example.taskflow.log.entity.ActivityType;
@@ -29,6 +30,7 @@ import com.example.taskflow.task.dto.response.TaskResponseDto;
 import com.example.taskflow.task.dto.response.TaskWithCommentResponseDto;
 import com.example.taskflow.task.entity.Status;
 import com.example.taskflow.task.entity.Task;
+import com.example.taskflow.task.event.TaskDeletedEvent;
 import com.example.taskflow.task.exception.StatusTransitionException;
 import com.example.taskflow.task.repository.TaskRepository;
 import com.example.taskflow.user.entity.User;
@@ -45,6 +47,7 @@ public class TaskService {
 	private final TaskRepository taskRepository;
 	private final UserRepository userRepository;
 	private final CommentRepository commentRepository;
+	private final ApplicationEventPublisher eventPublisher;
 
 
 	@ActivityLogging(value = ActivityType.TASK_CREATED, targetParam = "createdById")
@@ -89,7 +92,9 @@ public class TaskService {
 
 		foundTask.changeStatus(requestDto.getStatus()); //더티체킹
 		List<Comment> comments = commentRepository.findByTaskIdAndDeletedFalse(id);
-		List<CommentSimpleResponseDto> commentSimpleResponses = comments.stream().map(CommentSimpleResponseDto::from).collect(Collectors.toList());
+		List<CommentSimpleResponseDto> commentSimpleResponses = comments.stream()
+			.map(CommentSimpleResponseDto::from)
+			.collect(Collectors.toList());
 
 		return TaskWithCommentResponseDto.from(foundTask, commentSimpleResponses);
 	}
@@ -106,7 +111,8 @@ public class TaskService {
 		User assignedChangeUser = getUserOrThrow(userRepository.findById(authId));
 
 		//변경사항 더티체킹
-		foundTask.updateTaskFrom(assignedChangeUser, requestDto.getTitle(), requestDto.getContent(), requestDto.getDeadline(), requestDto.getPriority());
+		foundTask.updateTaskFrom(assignedChangeUser, requestDto.getTitle(), requestDto.getContent(),
+			requestDto.getDeadline(), requestDto.getPriority());
 
 		return TaskResponseDto.from(foundTask);
 	}
@@ -115,12 +121,14 @@ public class TaskService {
 	public void softDeleteTask(Long id, AuthUserDto authUserDto) {
 		Long authId = authUserDto.getId();
 		Task foundTask = getTaskOrThrow(taskRepository.findByIdAndDeletedFalse(id));
-		if(!isTaskOwner(foundTask.getId(), authId)) {
+		if (!isTaskOwner(foundTask.getCreatedBy().getId(), authId)) {
 			throw new UserMismatchException("내가 작성하지 않은 게시물은 삭제할 수 없습니다.");
 		}
 
 		foundTask.softDelete(); //논리적 삭제 메서드 호출
 		foundTask.setDeletedAt(); //삭제 시각 기록
+
+		eventPublisher.publishEvent(new TaskDeletedEvent(foundTask.getId()));
 	}
 
 	/*
@@ -141,6 +149,18 @@ public class TaskService {
 
 		//단건 조회에서만 코멘츠가 붙음 전체조회에선 변환해서 바로 반환
 		return tasks.map(TaskResponseDto::from);
+	}
+
+	/*
+	요구사항
+	유저 탈퇴 시 해당 사용자가 담당한 태스크는 미할당 상태로 변경
+	인자로 받아온 userId 와 assignedToId 일치하는 게시물 조회 후 assignedToId 필드를 null 로 처리할 것
+	 */
+	public void ownerDeletionForTask(Long userId) {
+		List<Task> foundTasks = taskRepository.findByAssignedTo_IdAndDeletedFalse(userId);
+
+		foundTasks.forEach(Task::unassignTask);
+		taskRepository.saveAll(foundTasks);
 	}
 
 	// 헬퍼 메서드

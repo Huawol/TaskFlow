@@ -65,11 +65,19 @@ public class CommentService {
         findComment.softDelete();
     }
 
-
+    @Transactional(readOnly = true)
     public List<FindAllCommentResponseDto> findAllComment() {
         List<Comment> comments = commentRepository.findByDeletedFalse();
         return comments.stream().map(FindAllCommentResponseDto::toDto).toList();
     }
 
-
+    /*
+    테스크삭제에 따른 추가 로직
+    해당 테스크에 맵핑된 코멘트 리스트를 논리적삭제시킴
+    */
+    public void deleteCommentsByTaskDeletion(Long taskId) {
+        List<Comment> foundComments = commentRepository.findByTaskIdAndDeletedFalse(taskId);
+        foundComments.forEach(Comment::softDelete);
+        commentRepository.saveAll(foundComments);
+    }
 }

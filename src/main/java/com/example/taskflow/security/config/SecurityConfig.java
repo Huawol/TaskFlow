@@ -25,6 +25,7 @@ public class SecurityConfig {
     private final JwtUtil jwtUtil;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    private final TokenBlacklistRepository tokenBlacklistRepository;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
@@ -65,16 +66,17 @@ public class SecurityConfig {
 
                         // 대시보드 인가
                         .requestMatchers(HttpMethod.GET, "/api/dashboards").hasRole(UserRole.USER.name())
-                        .requestMatchers(HttpMethod.GET, "/api/dashboards/*").hasRole(UserRole.USER.name())
+                        .requestMatchers(HttpMethod.GET, "/api/dashboards/**").hasRole(UserRole.USER.name())
 
                         // 로그 조회 인가
+                        .requestMatchers("/error").permitAll()
                         .requestMatchers(HttpMethod.GET, "/activities").hasRole(UserRole.USER.name())
 
                         .anyRequest().denyAll()
                 )
 
                 //필터 등록 // 인증하는  단계를 직접구현해야해서 어렵게 느껴지는거라고 하시는군....
-                .addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class) // 토큰 검사
+                .addFilterBefore(new JwtFilter(jwtUtil, tokenBlacklistRepository), UsernamePasswordAuthenticationFilter.class) // 토큰 검사
                 // 에러 처리까지 완벽하게 하고 싶다면 exceptionHandling 을 등록을 해야한다.
                 .exceptionHandling(configure -> configure
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint)
