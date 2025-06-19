@@ -3,7 +3,6 @@ package com.example.taskflow.dashboard.service;
 
 import com.example.taskflow.dashboard.dto.*;
 //import com.example.taskflow.dashboard.repository.ActivityLogRepository;
-import com.example.taskflow.dashboard.repository.ActivityLogRepository;
 import com.example.taskflow.dashboard.repository.TaskStatisticsRepository;
 import com.example.taskflow.task.entity.Status;
 import com.example.taskflow.task.entity.Task;
@@ -26,7 +25,6 @@ import java.util.stream.Collectors;
 public class DashboardService {
 
     private final TaskStatisticsRepository taskStatisticsRepository;
-    private final ActivityLogRepository activityLogRepository;
 
     public DashboardStatisticsDto getStatistics(LocalDate from, LocalDate to) {
         LocalDateTime start = from.atStartOfDay();
@@ -119,8 +117,6 @@ public class DashboardService {
         return taskStatisticsRepository.searchTaskByStatus_Todo(status);
     }
 
-
-
     private Map<Status, Long> toMap(List<TaskStatusCountDto> list) {
 
         return list.stream()
@@ -129,19 +125,6 @@ public class DashboardService {
                         TaskStatusCountDto::getCount));
 
 
-    }
-
-//    }
-
-    //로그 기록 가져오기 // 로그쪽 되는거 보고 수정
-    public List<ActivityLogDto> getAcitivityFeed() {
-        LocalDateTime to = LocalDateTime.now(); // 7일정도
-        LocalDateTime from = to.minusDays(7);
-
-        Pageable topFive = PageRequest.of(0, 5, // 0페이지, 5건
-                Sort.by(Sort.Direction.DESC, "createdAt")); // 최신순
-
-        return activityLogRepository.fetchFeed(from, to, topFive);
     }
 
 }

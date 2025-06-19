@@ -1,5 +1,6 @@
 package com.example.taskflow.security.config;
 
+import com.example.taskflow.security.Repository.TokenBlacklistRepository;
 import com.example.taskflow.security.enums.UserRole;
 import com.example.taskflow.security.exception.authentication.JwtAccessDeniedHandler;
 import com.example.taskflow.security.exception.authentication.JwtAuthenticationEntryPoint;
