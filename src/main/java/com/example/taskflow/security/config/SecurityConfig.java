@@ -43,7 +43,7 @@ public class SecurityConfig {
 
                 // config로 url에 대한 인증/인가를 관리
                 .authorizeHttpRequests(auth -> auth
-                        // todo : 인가할거 추가..
+                        // 인가할거 추가..
                         // 유저 및 로그인 인가
                         .requestMatchers(HttpMethod.POST, "/api/users/signup").permitAll() // 회원가입
                         .requestMatchers(HttpMethod.GET, "/api/users/login").permitAll() // 로그인 //http://localhost:8080/login // 인증인가를 확인하지 않고 전부 허용

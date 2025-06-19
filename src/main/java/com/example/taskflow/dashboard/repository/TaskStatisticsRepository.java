@@ -1,7 +1,5 @@
 package com.example.taskflow.dashboard.repository;
 
-import com.example.taskflow.dashboard.dto.DailyTaskTrendDto;
-import com.example.taskflow.dashboard.dto.MonthlyTaskTrendDto;
 import com.example.taskflow.dashboard.dto.TaskStatusCountDto;
 import com.example.taskflow.task.entity.Status;
 import com.example.taskflow.task.entity.Task;
@@ -44,7 +42,7 @@ public interface TaskStatisticsRepository extends JpaRepository<Task, Long> {
             SELECT COUNT(t)
             FROM Task t
             WHERE t.status IN :status
-            AND t.deleted = false 
+            AND t.deleted = false
             AND t.createdAt BETWEEN :from AND :to
             """)
     long countByStatusAndPeriod(@Param("status") Status status,
@@ -53,10 +51,10 @@ public interface TaskStatisticsRepository extends JpaRepository<Task, Long> {
 
     //특정 유저의 해당 날짜 마감인 태스크 목록 조회 // task에 assignedTo 쓰는거
     @Query("""
-            SELECT t 
-            FROM Task t 
-            WHERE t.assignedTo = :userId 
-            AND DATE(t.deadline) = :date 
+            SELECT t
+            FROM Task t
+            WHERE t.assignedTo = :userId
+            AND DATE(t.deadline) = :date
             AND t.status IN (:statuses)
             AND t.deleted = false
             """)
