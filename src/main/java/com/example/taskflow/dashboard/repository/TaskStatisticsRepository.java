@@ -1,9 +1,6 @@
 package com.example.taskflow.dashboard.repository;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -51,7 +48,7 @@ public interface TaskStatisticsRepository extends JpaRepository<Task, Long> {
 	List<TaskStatusCountDto> countMyStatus(@Param("userId") Long userId);
 
 	@Query("""
-		SELECT count(t) FROM Task t WHERE t.deleted = false                        
+		SELECT count(t) FROM Task t WHERE t.deleted = false
 		""")
 	Long countAllTasks();
 
