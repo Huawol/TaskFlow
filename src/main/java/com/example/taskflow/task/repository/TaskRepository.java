@@ -1,6 +1,7 @@
 package com.example.taskflow.task.repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -17,4 +18,11 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 	Page<Task> findByCreatedAtBetweenAndDeletedFalse(LocalDateTime periodStart, LocalDateTime periodEnd, Pageable pageable);
 	//검색조건 없을시 전체 조회 페이징 리스트 반환
 	Page<Task> findAllByDeletedFalse(Pageable pageable);
+
+	//삭제되지 않은 Taskㅇ의 개수를 카운트
+	long countByDeletedFalse();
+
+	//삭제되지 않은 Task를 오름차순 정렬
+	//List<Task> findAllByDeletedAtIsNullOrderByPriorityAsc();
+	List<Task> findAllByDeletedFalseOrderByPriorityAsc();
 }

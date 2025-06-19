@@ -21,6 +21,8 @@ public class ActivityLog extends BaseEntity {
     @Id@GeneratedValue
     private Long id;
 
+    @Column(name = "userId", insertable = false, updatable = false)
+
     private Long userId; //사용자 ID;
 
     @Column(name = "ip_address")

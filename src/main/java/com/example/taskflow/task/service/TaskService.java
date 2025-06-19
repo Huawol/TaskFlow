@@ -133,6 +133,15 @@ public class TaskService {
 		//단건 조회에서만 코멘츠가 붙음 전체조회에선 변환해서 바로 반환
 		return tasks.map(TaskResponseDto::from);
 	}
+	// Task 리스트 조회
+	@Transactional(readOnly = true)
+	public List<TaskResponseDto> getTasksSortedByPriority() {
+		//List<Task> tasks = taskRepository.findAllByDeletedAtIsNullOrderByPriorityAsc();
+		List<Task> tasks = taskRepository.findAllByDeletedFalseOrderByPriorityAsc();
+		return tasks.stream()
+				.map(TaskResponseDto::from)
+				.collect(Collectors.toList());
+	}
 
 	// 헬퍼 메서드
 	private User getUserOrThrow(Optional<User> user) {

@@ -1,6 +1,7 @@
 package com.example.taskflow.task.controller;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -95,5 +96,13 @@ public class TaskController {
 			.body(new ApiResponse<>(true, "정상적으로 삭제 되었습니다.", null));
 	}
 
+	@PreAuthorize("isAuthenticated()")
+	@GetMapping("/priority")
+	public ResponseEntity<ApiResponse<List<TaskResponseDto>>> getTasksByPriority() {
+		List<TaskResponseDto> tasks = taskService.getTasksSortedByPriority();
+
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ApiResponse<>(true, "정상적으로 우선순위 기준으로 할일을 조회했습니다.", tasks));
+	}
 
 }

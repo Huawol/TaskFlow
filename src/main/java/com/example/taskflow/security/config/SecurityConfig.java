@@ -47,6 +47,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/users/login").permitAll() // 로그인 //http://localhost:8080/login // 인증인가를 확인하지 않고 전부 허용
                         .requestMatchers(HttpMethod.DELETE, "/api/users/delete").hasRole(UserRole.USER.name()) //
                         .requestMatchers(HttpMethod.POST, "/api/users/logout").hasRole(UserRole.USER.name()) // 프로필 조회
+                        //.requestMatchers(HttpMethod.GET, "/api/dashboards/total-tasks").hasRole(UserRole.USER.name())
 
                         // 할일 인가
                         .requestMatchers(HttpMethod.POST, "/api/tasks").hasRole(UserRole.USER.name()) // 생성
@@ -55,6 +56,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PATCH, "/api/tasks/*").hasRole(UserRole.USER.name()) // 상태값수정
                         .requestMatchers(HttpMethod.PUT, "/api/tasks/*").hasRole(UserRole.USER.name()) // 전체수정
                         .requestMatchers(HttpMethod.DELETE, "/api/tasks/*").hasRole(UserRole.USER.name()) // 삭제
+                        .requestMatchers(HttpMethod.GET, "/api/tasks/priority").hasRole(UserRole.USER.name()) //
 
                         // 댓글 인가
                         .requestMatchers(HttpMethod.POST, "/api/tasks/comments").hasRole(UserRole.USER.name())
@@ -65,11 +67,11 @@ public class SecurityConfig {
 
                         // 대시보드 인가
                         .requestMatchers(HttpMethod.GET, "/api/dashboards").hasRole(UserRole.USER.name())
-                        .requestMatchers(HttpMethod.GET, "/api/dashboards/*").hasRole(UserRole.USER.name())
+                        .requestMatchers(HttpMethod.GET, "/api/dashboards/**").hasRole(UserRole.USER.name())
 
                         // 로그 조회 인가
                         .requestMatchers(HttpMethod.GET, "/api/logs").hasRole(UserRole.USER.name())
-
+                        .requestMatchers("/error").permitAll()
                         .anyRequest().denyAll()
                 )
 
