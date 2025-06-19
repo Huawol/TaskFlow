@@ -72,14 +72,14 @@ public class UserServiceImpl implements UserService {
 		/*
 		userName 즉 일반적으로 사용되는 id 값도 중복불가
 		*/
-		if (userRepository.existsByUserName(signupRequestDto.getUserName())) {
+		if (userRepository.existsByUsername(signupRequestDto.getUsername())) {
 			throw new DuplicateRequestException("이미 존재하는 유저명입니다.");
 		}
 
 		User user = new User(
 			signupRequestDto.getEmail(),
 			passwordEncoder.encode(signupRequestDto.getPassword()),
-			signupRequestDto.getUserName(),
+			signupRequestDto.getUsername(),
 			signupRequestDto.getName()
 		);
 		user.setRole(UserRole.USER);
@@ -89,9 +89,9 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	@ActivityLogging(value = ActivityType.USER_LOGGED_IN, targetParam = "userName")
+	@ActivityLogging(value = ActivityType.USER_LOGGED_IN, targetParam = "username")
 	public LoginResponseDto login(LoginRequestDto loginRequestDto) {
-		User user = userRepository.findByUserNameAndDeletedFalse(loginRequestDto.getUserName())
+		User user = userRepository.findByUsernameAndDeletedFalse(loginRequestDto.getUsername())
 			.orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 아이디입니다."));
 
 		if (!passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword())) {
@@ -102,7 +102,7 @@ public class UserServiceImpl implements UserService {
 
 	//로그아웃 토큰 블랙리스트 저장
 	@Override
-	@ActivityLogging(value = ActivityType.USER_LOGGED_OUT, targetParam = "userName")
+	@ActivityLogging(value = ActivityType.USER_LOGGED_OUT, targetParam = "username")
 	public void logout(String token) {
 		if (tokenBlacklistRepository.existsByToken(token)) {
 			throw new BlacklistedTokenException("이미 블랙리스트에 등록된 토큰입니다.");

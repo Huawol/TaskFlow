@@ -28,7 +28,7 @@ public class FindAllCommentResponseDto {
 		return new FindAllCommentResponseDto(
 			comment.getId(),
 			comment.getContent(),
-			comment.getUser().getUserName(),
+			comment.getUser().getUsername(),
 			comment.getCreatedAt(),
 			comment.getUpdatedAt()
 		);
