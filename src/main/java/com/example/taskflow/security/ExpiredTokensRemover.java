@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public class ExpiredTokensRemover {
+
 	private final TokenBlacklistRepository tokenBlacklistRepository;
 
 	@Scheduled(cron = "0 0 * * * *") // 정시마다 실행
@@ -25,4 +26,5 @@ public class ExpiredTokensRemover {
 			log.info("만료시간이 지난 토큰 {} 개를 삭제했습니다.", deletedCount);
 		}
 	}
+
 }

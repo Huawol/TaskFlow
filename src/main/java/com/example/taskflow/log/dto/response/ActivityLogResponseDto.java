@@ -1,13 +1,14 @@
 package com.example.taskflow.log.dto.response;
 
+import java.time.LocalDateTime;
+
 import com.example.taskflow.log.entity.ActivityLog;
 import com.example.taskflow.log.entity.ActivityType;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
@@ -15,30 +16,31 @@ import java.time.LocalDateTime;
 @Builder
 public class ActivityLogResponseDto {
 
-    private String username;
+	private String username;
 
-    private ActivityType activityType;
+	private ActivityType activityType;
 
-    private Long targetId;
+	private Long targetId;
 
-    private LocalDateTime timestamp;
+	private LocalDateTime timestamp;
 
-    private String description;
+	private String description;
 
-    public ActivityLogResponseDto(ActivityLog log){
-        this.activityType = log.getActivityType();
-        this.targetId = log.getTargetId();
-        this.description = log.getDescription();
-        this.timestamp = log.getTimestamp();
-    }
+	public ActivityLogResponseDto(ActivityLog log) {
+		this.activityType = log.getActivityType();
+		this.targetId = log.getTargetId();
+		this.description = log.getDescription();
+		this.timestamp = log.getTimestamp();
+	}
 
-    public static ActivityLogResponseDto toDto(ActivityLog log, String username) {
-        return  ActivityLogResponseDto.builder()
-                .timestamp(log.getTimestamp())
-                .username(username)
-                .activityType(log.getActivityType())
-                .targetId(log.getTargetId())
-                .description(log.getDescription())
-                .build();
-    }
+	public static ActivityLogResponseDto toDto(ActivityLog log, String username) {
+		return ActivityLogResponseDto.builder()
+			.timestamp(log.getTimestamp())
+			.username(username)
+			.activityType(log.getActivityType())
+			.targetId(log.getTargetId())
+			.description(log.getDescription())
+			.build();
+	}
+
 }

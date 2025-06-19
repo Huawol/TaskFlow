@@ -12,10 +12,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name="token_blacklist")
+@Table(name = "token_blacklist")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TokenBlacklist {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -29,4 +30,5 @@ public class TokenBlacklist {
 		this.token = token;
 		this.expiredAt = expiredAt;
 	}
+
 }

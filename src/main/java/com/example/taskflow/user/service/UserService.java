@@ -7,8 +7,13 @@ import com.example.taskflow.user.dto.SignupResponseDto;
 
 //사용자 서비스 인터페이스
 public interface UserService {
-    void deleteUser(String token, String email, String password);
-    SignupResponseDto signUp(SignupRequestDto signupRequestDto);
-    LoginResponseDto login(LoginRequestDto loginRequestDto);
-    void logout(String token);
+
+	void deleteUser(String token, String email, String password);
+
+	SignupResponseDto signUp(SignupRequestDto signupRequestDto);
+
+	LoginResponseDto login(LoginRequestDto loginRequestDto);
+
+	void logout(String token);
+
 }

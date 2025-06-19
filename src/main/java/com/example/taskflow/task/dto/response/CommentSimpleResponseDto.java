@@ -11,6 +11,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class CommentSimpleResponseDto {
+
 	private Long id;
 
 	private String content;
@@ -20,4 +21,5 @@ public class CommentSimpleResponseDto {
 	public static CommentSimpleResponseDto from(Comment comment) {
 		return new CommentSimpleResponseDto(comment.getId(), comment.getContent(), comment.getCreatedAt());
 	}
+
 }
