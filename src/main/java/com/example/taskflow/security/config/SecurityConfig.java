@@ -43,7 +43,7 @@ public class SecurityConfig {
 
                 // config로 url에 대한 인증/인가를 관리
                 .authorizeHttpRequests(auth -> auth
-                        // 인가할거 추가..
+                        // todo : 인가할거 추가..
                         // 유저 및 로그인 인가
                         .requestMatchers(HttpMethod.POST, "/api/users/signup").permitAll() // 회원가입
                         .requestMatchers(HttpMethod.GET, "/api/users/login").permitAll() // 로그인 //http://localhost:8080/login // 인증인가를 확인하지 않고 전부 허용
@@ -70,8 +70,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/dashboards/**").hasRole(UserRole.USER.name())
 
                         // 로그 조회 인가
-                        .requestMatchers(HttpMethod.GET, "/api/logs").hasRole(UserRole.USER.name())
                         .requestMatchers("/error").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/activities").hasRole(UserRole.USER.name())
 
                         .anyRequest().denyAll()
                 )

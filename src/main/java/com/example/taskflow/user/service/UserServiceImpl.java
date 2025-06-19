@@ -1,4 +1,6 @@
 package com.example.taskflow.user.service;
+import com.example.taskflow.log.aop.ActivityLogging;
+import com.example.taskflow.log.entity.ActivityType;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -89,6 +91,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@ActivityLogging(value = ActivityType.USER_LOGGED_IN, targetParam = "userName")
 	public LoginResponseDto login(LoginRequestDto loginRequestDto) {
 		User user = userRepository.findByUserNameAndDeletedFalse(loginRequestDto.getUserName())
 			.orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 아이디입니다."));

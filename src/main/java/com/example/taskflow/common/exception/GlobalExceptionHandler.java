@@ -81,6 +81,10 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ApiResponse<Void>> handlerLoginFailedException(LoginFailedException ex) {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<>(false, ex.getMessage(), null));
 	}
+	@ExceptionHandler(LogNotFoundException.class)
+	public ResponseEntity<ApiResponse<Void>> handlerLogNotFoundException(LogNotFoundException ex) {
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>(false, ex.getMessage(), null));
+	}
 
 	@ExceptionHandler(BlacklistedTokenException.class)
 	public ResponseEntity<ApiResponse<Void>> handlerBlacklistedTokenException(BlacklistedTokenException ex) {
