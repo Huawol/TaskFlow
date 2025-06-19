@@ -103,7 +103,7 @@ public class TaskService {
 	public TaskResponseDto changeTask(Long id, TaskUpdateRequestDto requestDto, AuthUserDto authUserDto) {
 		Long authId = authUserDto.getId();
 		Task foundTask = getTaskOrThrow(taskRepository.findByIdAndDeletedFalse(id));
-		if(!isTaskOwner(foundTask.getId(), authId)) {
+		if(!isTaskOwner(foundTask.getCreatedBy().getId(), authId)) {
 			throw new UserMismatchException("내가 작성하지 않은 게시물은 수정할 수 없습니다.");
 		}
 
