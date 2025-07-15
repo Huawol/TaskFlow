@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import com.example.taskflow.comment.entity.Comment;
 import com.example.taskflow.comment.repository.CommentRepository;
@@ -21,6 +22,7 @@ import com.example.taskflow.log.aop.ActivityLogging;
 import com.example.taskflow.log.entity.ActivityType;
 import com.example.taskflow.security.dto.AuthUserDto;
 import com.example.taskflow.task.dto.request.TaskCreateRequestDto;
+import com.example.taskflow.task.dto.request.TaskSearchRequestDto;
 import com.example.taskflow.task.dto.request.TaskStatusRequestDto;
 import com.example.taskflow.task.dto.request.TaskUpdateRequestDto;
 import com.example.taskflow.task.dto.response.CommentSimpleResponseDto;
@@ -30,6 +32,7 @@ import com.example.taskflow.task.entity.Status;
 import com.example.taskflow.task.entity.Task;
 import com.example.taskflow.task.event.TaskDeletedEvent;
 import com.example.taskflow.task.exception.StatusTransitionException;
+import com.example.taskflow.task.repository.TaskJpqlRepositoryImpl;
 import com.example.taskflow.task.repository.TaskRepository;
 import com.example.taskflow.user.entity.User;
 import com.example.taskflow.user.repository.UserRepository;
@@ -47,6 +50,7 @@ public class TaskService {
 	private final UserRepository userRepository;
 	private final CommentRepository commentRepository;
 	private final ApplicationEventPublisher eventPublisher;
+	private final TaskJpqlRepositoryImpl taskCustomRepository;
 
 	@ActivityLogging(value = ActivityType.TASK_CREATED, targetParam = "createdById")
 	public TaskResponseDto saveTask(Long createdById, TaskCreateRequestDto requestDto) {
@@ -157,11 +161,19 @@ public class TaskService {
 	유저 탈퇴 시 해당 사용자가 담당한 태스크는 미할당 상태로 변경
 	인자로 받아온 userId 와 assignedToId 일치하는 게시물 조회 후 assignedToId 필드를 null 로 처리할 것
 	 */
+	// @Transactional
 	public void ownerDeletionForTask(Long userId) {
 		List<Task> foundTasks = taskRepository.findByAssignedTo_IdAndDeletedFalse(userId);
 
 		foundTasks.forEach(Task::unassignTask);
 		taskRepository.saveAll(foundTasks);
+	}
+
+	public List<TaskResponseDto> findTasksByConditions(TaskSearchRequestDto requestDto) {
+		List<Task> tasks =
+			taskRepository.searchTasksByQueryDsl(requestDto.getTitle(), requestDto.getContent(), requestDto.getStatus());
+
+		return tasks.stream().map(TaskResponseDto::from).toList();
 	}
 
 	// 헬퍼 메서드
