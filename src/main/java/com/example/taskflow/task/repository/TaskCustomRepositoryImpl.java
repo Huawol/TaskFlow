@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 
 @Repository
 @RequiredArgsConstructor
-public class TaskCustomRepositoryImpl implements TaskCustomRepository{
+public class TaskCustomRepositoryImpl implements TaskCustomRepository {
 
 	private final JPAQueryFactory queryFactory;
 

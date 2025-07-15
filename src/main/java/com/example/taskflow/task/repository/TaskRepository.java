@@ -24,13 +24,12 @@ public interface TaskRepository extends JpaRepository<Task, Long>, TaskCustomRep
 	//담당자Id로 조회하는 메서드
 	List<Task> findByAssignedTo_IdAndDeletedFalse(Long userId);
 
-
 	//TaskJpqlRepository 메서드
 	@Override
 	List<Task> searchTasksByJpql(String title, String content, String status);
 
-
 	//QueryDsl 메서드
 	@Override
 	List<Task> searchTasksByQueryDsl(String username, String content, String status);
+
 }

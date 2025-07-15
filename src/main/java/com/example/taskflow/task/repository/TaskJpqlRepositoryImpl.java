@@ -14,7 +14,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 
 @Repository
-public class TaskJpqlRepositoryImpl implements TaskJpqlRepository{
+public class TaskJpqlRepositoryImpl implements TaskJpqlRepository {
 
 	@PersistenceContext
 	private EntityManager em;
@@ -26,18 +26,18 @@ public class TaskJpqlRepositoryImpl implements TaskJpqlRepository{
 		//조건문을 담을 리스트
 		List<String> conditionList = new ArrayList<>();
 
-		if(StringUtils.hasText(title)) {
+		if (StringUtils.hasText(title)) {
 			conditionList.add("t.title like concat('%', :title, '%')"); //와일드카드 포함
 		}
-		if(StringUtils.hasText(content)) {
+		if (StringUtils.hasText(content)) {
 			conditionList.add("t.content like concat('%', :content, '%')");
 		}
-		if(StringUtils.hasText(status)) {
+		if (StringUtils.hasText(status)) {
 			conditionList.add("t.status = :status");
 		}
 
 		//조건리스트가 하나라도 있다면 where + conditionList.get(0) + and + .get(1) ...
-		if(!conditionList.isEmpty()) {
+		if (!conditionList.isEmpty()) {
 			jpql += " where " + String.join(" and ", conditionList);
 		}
 
@@ -45,13 +45,13 @@ public class TaskJpqlRepositoryImpl implements TaskJpqlRepository{
 		TypedQuery<Task> query = em.createQuery(jpql, Task.class);
 
 		//파라미터 바인딩
-		if(StringUtils.hasText(title)) {
+		if (StringUtils.hasText(title)) {
 			query.setParameter("title", title); //와일드카드 포함
 		}
-		if(StringUtils.hasText(content)) {
+		if (StringUtils.hasText(content)) {
 			query.setParameter("content", content);
 		}
-		if(StringUtils.hasText(status)) {
+		if (StringUtils.hasText(status)) {
 			//이넘타입 변환 메서드 소문자도 가능
 			Status fromStatus = Status.from(status);
 			query.setParameter("status", fromStatus);

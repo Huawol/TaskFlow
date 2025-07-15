@@ -11,7 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import com.example.taskflow.comment.entity.Comment;
 import com.example.taskflow.comment.repository.CommentRepository;
@@ -171,7 +170,8 @@ public class TaskService {
 
 	public List<TaskResponseDto> findTasksByConditions(TaskSearchRequestDto requestDto) {
 		List<Task> tasks =
-			taskRepository.searchTasksByQueryDsl(requestDto.getTitle(), requestDto.getContent(), requestDto.getStatus());
+			taskRepository.searchTasksByQueryDsl(requestDto.getTitle(), requestDto.getContent(),
+				requestDto.getStatus());
 
 		return tasks.stream().map(TaskResponseDto::from).toList();
 	}
