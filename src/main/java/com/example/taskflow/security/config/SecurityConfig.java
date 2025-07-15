@@ -79,6 +79,8 @@ public class SecurityConfig {
 				.hasRole(UserRole.USER.name())
 				.requestMatchers(HttpMethod.DELETE, "/api/tasks/comments/*")
 				.hasRole(UserRole.USER.name())
+				.requestMatchers(HttpMethod.GET, "/api/tasks/search")
+				.hasRole(UserRole.USER.name())
 
 				// 대시보드 인가
 				.requestMatchers(HttpMethod.GET, "/api/dashboards")

@@ -1,6 +1,7 @@
 package com.example.taskflow.task.controller;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.taskflow.common.ApiResponse;
 import com.example.taskflow.security.dto.AuthUserDto;
 import com.example.taskflow.task.dto.request.TaskCreateRequestDto;
+import com.example.taskflow.task.dto.request.TaskSearchRequestDto;
 import com.example.taskflow.task.dto.request.TaskStatusRequestDto;
 import com.example.taskflow.task.dto.request.TaskUpdateRequestDto;
 import com.example.taskflow.task.dto.response.TaskResponseDto;
@@ -97,6 +99,14 @@ public class TaskController {
 		taskService.softDeleteTask(id, authUserDto);
 		return ResponseEntity.status(HttpStatus.OK)
 			.body(new ApiResponse<>(true, "정상적으로 삭제 되었습니다.", null));
+	}
+
+	@GetMapping("/search")
+	public ResponseEntity<ApiResponse<List<TaskResponseDto>>> getTasksByConditions(
+		@RequestBody TaskSearchRequestDto requestDto) {
+		return ResponseEntity.ok(ApiResponse.createSuccess(
+			"정상적으로 조회 되었습니다.",
+			taskService.findTasksByConditions(requestDto)));
 	}
 
 }
